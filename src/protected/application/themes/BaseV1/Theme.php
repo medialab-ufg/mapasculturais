@@ -1211,6 +1211,10 @@ class Theme extends MapasCulturais\Theme {
         // It Javis ColorPicker
         $this->enqueueScript('vendor', 'bootstrap-colorpicker', '/vendor/bootstrap-colorpicker/js/bootstrap-colorpicker.js');
         $this->enqueueStyle('vendor', 'bootstrap-colorpicker', '/vendor/bootstrap-colorpicker/css/bootstrap-colorpicker.css');
+
+        //JCrop
+        $this->enqueueScript('vendor', 'jquery.Jcrop', '/vendor/jquery.jcrop/dist/jquery.Jcrop.js');
+        $this->enqueueStyle('vendor', 'jquery.Jcrop', '/vendor/jquery.jcrop/dist/jquery.Jcrop.css');
     }
 
     function includeCommonAssets() {
@@ -1495,7 +1499,11 @@ class Theme extends MapasCulturais\Theme {
             echo "\n</script>\n";
     }
 
-    function ajaxUploader($file_owner, $group_name, $response_action, $response_target, $response_template = '', $response_transform = '', $add_description_input = false, $file_types = '.jpg ou .png') {
+    function ajaxUploader($file_owner, $group_name, $response_action, $response_target, 
+                          $response_template = '', $response_transform = '', 
+                          $add_description_input = false, $file_types = '.jpg ou .png', 
+                          $canCrop = false) {
+                              \dump($file_types);
         $this->part('ajax-uploader', array(
             'file_owner' => $file_owner,
             'file_group' => $group_name,
@@ -1504,7 +1512,8 @@ class Theme extends MapasCulturais\Theme {
             'response_template' => $response_template,
             'response_transform' => $response_transform,
             'add_description' => $add_description_input,
-            'file_types' => $file_types
+            'file_types' => $file_types,
+            'can_crop' => $canCrop
         ));
     }
 

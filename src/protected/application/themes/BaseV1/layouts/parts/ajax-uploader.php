@@ -6,6 +6,7 @@
       data-action="<?php echo $response_action ?>"
       data-target="<?php echo $response_target ?>"
       data-group="<?php echo $file_group ?>"
+      data-crop="<?php echo json_encode($can_crop) ?>"
       <?php if($response_transform) echo " data-transform=\"$response_transform\" " ?>
       method="post"
       action="<?php echo $this->controller->createUrl('upload', array('id' => $file_owner->id)) ?>"

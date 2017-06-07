@@ -774,6 +774,9 @@ MapasCulturais.AjaxUploader = {
                             break;
                             case 'image-src':
                                 try{
+                                    if($form.data('crop')){
+                                        
+                                    }
                                     if($form.data('transform'))
                                         $target.attr('src', response[group].files[$form.data('transform')].url);
                                     else
@@ -817,7 +820,7 @@ MapasCulturais.AjaxUploader = {
                 // other available options:
                 //url:       url         // override for form's 'action' attribute
                 //type:      type        // 'get' or 'post', override for form's 'method' attribute
-                dataType:  'json'        // 'xml', 'script', or 'json' (expected server response type)
+                //dataType:  'json'        // 'xml', 'script', or 'json' (expected server response type)
                 //clearForm: true        // clear all form fields after successful submit
                 //resetForm: true        // reset the form after successful submit
 
