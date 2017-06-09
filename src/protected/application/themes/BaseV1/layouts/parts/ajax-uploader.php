@@ -6,7 +6,7 @@
       data-action="<?php echo $response_action ?>"
       data-target="<?php echo $response_target ?>"
       data-group="<?php echo $file_group ?>"
-      data-crop="<?php echo json_encode($can_crop) ?>"
+      data-crop="<?php echo $can_crop ?>"
       <?php if($response_transform) echo " data-transform=\"$response_transform\" " ?>
       method="post"
       action="<?php echo $this->controller->createUrl('upload', array('id' => $file_owner->id)) ?>"
@@ -17,8 +17,8 @@
 
     <?php if($file_types): ?><p class="form-help"><?php \MapasCulturais\i::_e("Tipos de arquivos suportados: ");?><?php echo $file_types; ?></p><?php endif; ?>
     <p class="form-help"><?php \MapasCulturais\i::_e("Tamanho máximo do arquivo: ");?><?php echo $app->maxUploadSize; ?></p>
+    <input type="hidden" name="data-crop" value="<?php echo json_encode($can_crop) ?>"/>
     <input type="file" name="<?php echo $file_group ?>" />
-
 </form>
 
 <div class="js-ajax-upload-progress">

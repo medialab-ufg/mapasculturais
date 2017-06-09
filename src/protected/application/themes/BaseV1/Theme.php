@@ -1503,7 +1503,7 @@ class Theme extends MapasCulturais\Theme {
                           $response_template = '', $response_transform = '', 
                           $add_description_input = false, $file_types = '.jpg ou .png', 
                           $canCrop = false) {
-                              \dump($file_types);
+                              
         $this->part('ajax-uploader', array(
             'file_owner' => $file_owner,
             'file_group' => $group_name,

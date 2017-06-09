@@ -1,4 +1,5 @@
 <?php $this->applyTemplateHook('avatar','before'); ?>
+<!--.avatar-->
 <div class="avatar <?php if($entity->avatar): ?>com-imagem<?php endif; ?>">
     <?php if($avatar = $entity->avatar): ?>
         <img src="<?php echo $avatar->transform('avatarBig')->url; ?>" alt="" class="js-avatar-img" />
@@ -12,5 +13,18 @@
         </div>
     <?php endif; ?>
 </div>
-<!--.avatar-->
+
+<!-- The Modal -->
+<form id="form-crop-image">
+    <div class="modal-crop" id="agent-crop-image" title="<?php \MapasCulturais\i::esc_attr_e("Recortar Imagem");?>">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modal-agent-crop-image">
+
+        <div id="modal-action">
+            <a id="save-crop" class="btn btn-primary"><?php \MapasCulturais\i::esc_attr_e("Salvar");?></a>
+            <a id="cancel-crop" class="btn btn-default"><?php \MapasCulturais\i::esc_attr_e("Cancelar");?></a>
+        </div>
+    </div>
+</form>
+
 <?php $this->applyTemplateHook('avatar','after'); ?>

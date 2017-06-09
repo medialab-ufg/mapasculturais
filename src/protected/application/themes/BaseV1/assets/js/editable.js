@@ -775,7 +775,22 @@ MapasCulturais.AjaxUploader = {
                             case 'image-src':
                                 try{
                                     if($form.data('crop')){
-                                        
+                                        $('#modal-agent-crop-image').attr('src', response.avatar.url);
+                                        $('#modal-agent-crop-image').Jcrop({
+                                            aspectRatio: 1/1,
+                                            maxSize: [600, 600],
+                                            minSize: [200, 200]
+                                        }, function(){
+                                            this.animateTo([100,100,200,200]);
+                                        });
+
+                                        $("#agent-crop-image").show();
+                                        $('#save-crop').one('click', function(){
+                                            $('#form-crop-image').submit();
+                                        });
+                                        $('#cancel-crop').one('click', function(){
+                                            $("#agent-crop-image").hide();
+                                        });
                                     }
                                     if($form.data('transform'))
                                         $target.attr('src', response[group].files[$form.data('transform')].url);

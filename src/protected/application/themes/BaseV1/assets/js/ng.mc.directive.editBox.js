@@ -53,7 +53,7 @@
                 });
 
                 this.openEditboxes[editboxId] = false;
-
+                
                 var $box = jQuery('#' + editboxId);
                 var $submitInput = $box.find('input:text');
                 $submitInput.on('keyup', function (event) {
