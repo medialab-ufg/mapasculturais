@@ -29,9 +29,8 @@
         <input id="y2" name="y2" type="hidden" value="">
         <input id="w" name="w" type="hidden" value="">
         <input id="h" name="h" type="hidden" value="">
-        <input type="file" name="avatar" />
         <input name="is_crop_upload" type="hidden">
-        <input id="original_image_source" name="original_image_source" type="hidden" value="">
+        <input id="original_image_source_id" name="original_image_source_id" type="hidden" value="">
         <div id="modal-action">
             <a id="save-crop" class="btn btn-primary"><?php \MapasCulturais\i::esc_attr_e("Salvar");?></a>
             <a id="cancel-crop" class="btn btn-default"><?php \MapasCulturais\i::esc_attr_e("Cancelar");?></a>

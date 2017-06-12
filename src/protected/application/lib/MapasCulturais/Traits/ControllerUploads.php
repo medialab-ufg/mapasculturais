@@ -51,8 +51,14 @@ trait ControllerUploads{
          */
 
         if(isset($_POST['is_crop_upload'])){
-            $originalImage = $_POST['original_image_source'];
-            $image = \WideImage\WideImage::load($originalImage);
+            $app = App::i();
+            $originalImageId = $_POST['original_image_source_id'];
+            $originalImage = $app->repo('AgentFile')->find($originalImageId);
+            $image = \WideImage\WideImage::load($originalImage->getPath());
+            $resizedImage = $image->resize(50, 50);
+
+            // $image = \WideImage\WideImage::load($originalImage);
+            // $resized = $image->resize(50, 50);
         }
 
         $this->requireAuthentication();
@@ -176,7 +182,7 @@ trait ControllerUploads{
         return;
     }
 
-    private function cropImage(){
+    private function cropImage($image){
         
     }
 

@@ -775,8 +775,9 @@ MapasCulturais.AjaxUploader = {
                             case 'image-src':
                                 try{
                                     if($form.data('crop')){
+                                        console.log(response.avatar.id);
                                         $('#modal-agent-crop-image').attr('src', response.avatar.url);
-                                        $('#original_image_source').val(response.avatar.url);
+                                        $('#original_image_source_id').val(response.avatar.id);
                                         $('#modal-agent-crop-image').Jcrop({
                                             onSelect: getCoordinates,
                                             onChange: getCoordinates,
