@@ -49,6 +49,12 @@ trait ControllerUploads{
         /**
          * @todo Melhores Mensagens de erro
          */
+
+        if(isset($_POST['is_crop_upload'])){
+            $originalImage = $_POST['original_image_source'];
+            $image = \WideImage\WideImage::load($originalImage);
+        }
+
         $this->requireAuthentication();
         
         $owner = $this->requestedEntity;
@@ -168,6 +174,10 @@ trait ControllerUploads{
         $app->em->flush();
         $this->json($result);
         return;
+    }
+
+    private function cropImage(){
+        
     }
 
     /**
