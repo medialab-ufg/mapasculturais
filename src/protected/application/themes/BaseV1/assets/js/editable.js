@@ -803,6 +803,7 @@ MapasCulturais.AjaxUploader = {
                                 $("#agent-crop-image").show();
                                 $('#save-crop').on('click', function(){
                                     $('#form-crop-image').submit();
+                                    location.reload();
                                 });
                                 $('#cancel-crop').on('click', function(){
                                     $("#agent-crop-image").hide();
@@ -812,7 +813,6 @@ MapasCulturais.AjaxUploader = {
 
                             case 'image-src':
                                 try{
-
                                     if($form.data('transform'))
                                         $target.attr('src', response[group].files[$form.data('transform')].url);
                                     else
@@ -833,7 +833,6 @@ MapasCulturais.AjaxUploader = {
 
                             case 'append':
                                 for(var i in response[group]){
-
                                     if(!response[group][i].description)
                                        response[group][i].description = response[group][i].name;
 
@@ -841,7 +840,6 @@ MapasCulturais.AjaxUploader = {
                                    $target.append(html);
                                }
                             break;
-
                         }
                     }
                     $form.trigger('ajaxForm.success', [response]);
