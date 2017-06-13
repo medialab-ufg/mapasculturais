@@ -50,30 +50,89 @@ trait ControllerUploads{
          * @todo Melhores Mensagens de erro
          */
 
-        if(isset($_POST['is_crop_upload'])){
-            $app = App::i();
-            $originalImageId = $_POST['original_image_source_id'];
-            $originalImage = $app->repo('AgentFile')->find($originalImageId);
-            $image = \WideImage\WideImage::load($originalImage->getPath());
-            $resizedImage = $image->resize(50, 50);
+         $app = App::i();
 
-            // $image = \WideImage\WideImage::load($originalImage);
-            // $resized = $image->resize(50, 50);
+        if($app->request->post('is_crop_upload')){
+            $app = App::i();
+            $x1 = $_POST['x1'];
+            $x2 = $_POST['x2'];
+            $y1 = $_POST['y1'];
+            $y2 = $_POST['y2'];
+            $width = $_POST['w'];
+            $height = $_POST['h'];
+
+            $originalImage = $app->request->post('original_image_source');
+            $group_name = $app->request->post('group_name');
+
+            $_FILES = [];
+
+            $folder = $app->storage->config['dir'];
+            $imagePath = $folder . $originalImage;
+
+
+            $image = \WideImage\WideImage::load($imagePath);
+            unlink($imagePath);
+            $image->crop($x1, $y1, $width, $height)->saveToFile($imagePath);
+            
+            $_FILES[$group_name] = [
+                'name' => $app->request->post('original_name'),
+                'type' => mime_content_type($imagePath),
+                'tmp_name' => $imagePath,
+                'size' => filesize($imagePath),
+                'error' => UPLOAD_ERR_OK
+            ];
+
+        }
+
+        if ($app->request->post('crop')) {
+            $filename = uniqid();
+            $folder = $app->storage->config['dir'];
+
+            foreach(array_keys($_FILES) as $group_name){
+                $tmp_file = $_FILES[$group_name]['tmp_name'];
+                $file_original_name = $_FILES[$group_name]['name'];
+                $extension = pathinfo($file_original_name, PATHINFO_EXTENSION);
+                $filename .= '.' . $extension;
+                
+                $image = \WideImage\WideImage::load($tmp_file);
+                $image->resize(800, 800)->saveToFile($folder . $filename);
+
+                $result = [];
+                
+                // testa se o upload é uma imagem
+                if(getimagesize($_FILES[$group_name]['tmp_name'])){
+                    $result['crop'] = [
+                        'source' => $filename,
+                        'group_name' => $group_name,
+                        'original_name' => $file_original_name,
+                        'image_url' => $app->storage->getUrlFromRelativePath($filename)
+                    ];
+
+                } else {
+                    $result['error'][$group_name] = \MapasCulturais\i::_e("Upload não é uma imagem válida");
+                }
+                
+                // Crop só funciona com um único arquivo por vez
+                break;
+                
+            }
+
+            $this->json($result);
+            return;
+
         }
 
         $this->requireAuthentication();
-        
+
         $owner = $this->requestedEntity;
-        
+
         if(!$owner){
             $this->errorJson(\MapasCulturais\i::__('O dono não existe'));
             return;
         }
 
         $file_class_name = $owner->getFileClassName();
-        
-        $app = App::i();
-        
+
         // if no files uploaded or no id in request data, return an error
         if(empty($_FILES) || !$this->data['id']){
             $this->errorJson(\MapasCulturais\i::__('Nenhum arquivo enviado'));
@@ -85,8 +144,6 @@ trait ControllerUploads{
 
         // the group of the files is the key in $_FILES array
         foreach(array_keys($_FILES) as $group_name){
-//            $this->errorJson('asd '.$this->id.' '.$group_name.' '.$app->getRegisteredFileGroup($this->id, $group_name));
-            $upload_group = $app->getRegisteredFileGroup($this->id, $group_name);
             // if the group exists
             if($upload_group = $app->getRegisteredFileGroup($this->id, $group_name)){
                 try {
@@ -121,7 +178,7 @@ trait ControllerUploads{
 
                 }catch(\MapasCulturais\Exceptions\FileUploadError $e){
                     $files[] = [
-                        'error' => $e->message, 
+                        'error' => $e->message,
                         'group' => $upload_group
                     ];
                 }
@@ -180,10 +237,6 @@ trait ControllerUploads{
         $app->em->flush();
         $this->json($result);
         return;
-    }
-
-    private function cropImage($image){
-        
     }
 
     /**

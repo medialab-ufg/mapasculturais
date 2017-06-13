@@ -772,39 +772,46 @@ MapasCulturais.AjaxUploader = {
                                 }catch (e){}
 
                             break;
+
+                            case 'crop': 
+                                var ratio = parseInt($form.data('ratio'));
+                                var size = $form.data('size');
+                                
+                                $('#modal-agent-crop-image').attr('src', response.crop.image_url);
+                                $('#original_image_source').val(response.crop.source);
+                                $('#group_name').val(response.crop.group_name);
+                                $('#original_name').val(response.crop.original_name);
+
+                                $('#modal-agent-crop-image').Jcrop({
+                                    onSelect: getCoordinates,
+                                    onChange: getCoordinates,
+                                    aspectRatio: ratio,
+                                    minSize: size
+                                }, function(){
+                                    this.animateTo([100,100,200,200]);
+                                });
+
+                                function getCoordinates(c){
+                                    $('#x1').val(c.x);
+                                    $('#y1').val(c.y);
+                                    $('#x2').val(c.x2);
+                                    $('#y2').val(c.y2);
+                                    $('#w').val(c.w);
+                                    $('#h').val(c.h);
+                                };
+
+                                $("#agent-crop-image").show();
+                                $('#save-crop').on('click', function(){
+                                    $('#form-crop-image').submit();
+                                });
+                                $('#cancel-crop').on('click', function(){
+                                    $("#agent-crop-image").hide();
+                                });
+
+                            break;
+
                             case 'image-src':
                                 try{
-                                    if($form.data('crop')){
-                                        console.log(response.avatar.id);
-                                        $('#modal-agent-crop-image').attr('src', response.avatar.url);
-                                        $('#original_image_source_id').val(response.avatar.id);
-                                        $('#modal-agent-crop-image').Jcrop({
-                                            onSelect: getCoordinates,
-                                            onChange: getCoordinates,
-                                            aspectRatio: 1/1,
-                                            maxSize: [600, 600],
-                                            minSize: [200, 200]
-                                        }, function(){
-                                            this.animateTo([100,100,200,200]);
-                                        });
-
-                                       function getCoordinates(c){
-                                            $('#x1').val(c.x);
-                                            $('#y1').val(c.y);
-                                            $('#x2').val(c.x2);
-                                            $('#y2').val(c.y2);
-                                            $('#w').val(c.w);
-                                            $('#h').val(c.h);
-                                       };
-
-                                        $("#agent-crop-image").show();
-                                        $('#save-crop').one('click', function(){
-                                            $('#form-crop-image').submit();
-                                        });
-                                        $('#cancel-crop').one('click', function(){
-                                            $("#agent-crop-image").hide();
-                                        });
-                                    }
 
                                     if($form.data('transform'))
                                         $target.attr('src', response[group].files[$form.data('transform')].url);

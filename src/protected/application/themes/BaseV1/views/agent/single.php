@@ -39,6 +39,8 @@ $editEntity = $this->controller->action === 'create' || $this->controller->actio
 
             <?php $this->part('singles/avatar', ['entity' => $entity, 'default_image' => 'img/avatar--agent.png']); ?>
 
+            <?php $this->part('singles/image-crop', ['entity' => $entity]) ?>
+
             <?php $this->part('singles/type', ['entity' => $entity]) ?>
 
             <?php $this->part('singles/name', ['entity' => $entity]) ?>

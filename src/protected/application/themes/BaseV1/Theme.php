@@ -1502,7 +1502,7 @@ class Theme extends MapasCulturais\Theme {
     function ajaxUploader($file_owner, $group_name, $response_action, $response_target, 
                           $response_template = '', $response_transform = '', 
                           $add_description_input = false, $file_types = '.jpg ou .png', 
-                          $canCrop = false) {
+                          $canCrop = false, $aspectRatio = '1/1', $minSize = [240, 240]) {
                               
         $this->part('ajax-uploader', array(
             'file_owner' => $file_owner,
@@ -1513,7 +1513,9 @@ class Theme extends MapasCulturais\Theme {
             'response_transform' => $response_transform,
             'add_description' => $add_description_input,
             'file_types' => $file_types,
-            'can_crop' => $canCrop
+            'can_crop' => $canCrop,
+            'aspect_ratio' => $aspectRatio,
+            'min_size' => $minSize
         ));
     }
 
