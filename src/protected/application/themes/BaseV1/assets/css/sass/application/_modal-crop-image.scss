@@ -3,8 +3,9 @@
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     align-content: center;
-    z-index: 10; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
+    z-index: 3000; /* Sit on top */
+    padding-top: 25px; /* Location of the box */
+    padding-bottom: 25px;
     left: 0;
     top: 0;
     margin-bottom: 50px;
@@ -24,9 +25,9 @@
 /* Modal Content (image) */
 .modal-content {
     margin: auto;
-    display: block;
-    width: 100%;
-    max-width: 900px;
+    display: block  !important;
+    width: 100% !important;
+    max-width: 1000px;
 }
 
 #modal-action {

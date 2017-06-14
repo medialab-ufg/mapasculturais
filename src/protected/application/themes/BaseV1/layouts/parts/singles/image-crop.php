@@ -6,9 +6,7 @@
         enctype="multipart/form-data">
             <img class="modal-content" id="modal-agent-crop-image" src="">
             <input id="x1" name="x1" type="hidden" value="">
-            <input id="x2" name="x2" type="hidden" value="">
             <input id="y1" name="y1" type="hidden" value="">
-            <input id="y2" name="y2" type="hidden" value="">
             <input id="w" name="w" type="hidden" value="">
             <input id="h" name="h" type="hidden" value="">
             <input name="is_crop_upload" type="hidden" value="1">

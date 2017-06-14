@@ -54,12 +54,11 @@ trait ControllerUploads{
 
         if($app->request->post('is_crop_upload')){
             $app = App::i();
-            $x1 = $_POST['x1'];
-            $x2 = $_POST['x2'];
-            $y1 = $_POST['y1'];
-            $y2 = $_POST['y2'];
-            $width = $_POST['w'];
-            $height = $_POST['h'];
+
+            $x1 = $app->request->post('x1');
+            $y1 = $app->request->post('y1');
+            $width = $app->request->post('w');
+            $height = $app->request->post('h');
 
             $originalImage = $app->request->post('original_image_source');
             $group_name = $app->request->post('group_name');
@@ -68,7 +67,6 @@ trait ControllerUploads{
 
             $folder = $app->storage->config['dir'];
             $imagePath = $folder . $originalImage;
-
 
             $image = \WideImage\WideImage::load($imagePath);
             unlink($imagePath);
@@ -81,7 +79,6 @@ trait ControllerUploads{
                 'size' => filesize($imagePath),
                 'error' => UPLOAD_ERR_OK
             ];
-
         }
 
         if ($app->request->post('crop')) {
@@ -95,7 +92,7 @@ trait ControllerUploads{
                 $filename .= '.' . $extension;
                 
                 $image = \WideImage\WideImage::load($tmp_file);
-                $image->resize(800, 800)->saveToFile($folder . $filename);
+                $image->resize(600, 600)->saveToFile($folder . $filename);
 
                 $result = [];
                 
@@ -114,12 +111,10 @@ trait ControllerUploads{
                 
                 // Crop só funciona com um único arquivo por vez
                 break;
-                
             }
 
             $this->json($result);
             return;
-
         }
 
         $this->requireAuthentication();
