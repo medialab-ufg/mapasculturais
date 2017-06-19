@@ -84,6 +84,7 @@ trait ControllerUploads{
         if ($app->request->post('crop')) {
             $filename = uniqid();
             $folder = $app->storage->config['dir'];
+            $isAvatarUpload = json_decode($app->request->post('avatar-upload'));
 
             foreach(array_keys($_FILES) as $group_name){
                 $tmp_file = $_FILES[$group_name]['tmp_name'];
@@ -92,7 +93,13 @@ trait ControllerUploads{
                 $filename .= '.' . $extension;
                 
                 $image = \WideImage\WideImage::load($tmp_file);
-                $image->resize(600, 600)->saveToFile($folder . $filename);
+
+                //checa se é upload de avatar ou capa de fundo e ajusta resize da imagem
+                if($isAvatarUpload){
+                    $image->resize(600, 600)->saveToFile($folder . $filename);
+                }else {
+                    $image->resize(850, 315)->saveToFile($folder . $filename);
+                }
 
                 $result = [];
                 
