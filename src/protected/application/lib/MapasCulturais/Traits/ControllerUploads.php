@@ -91,20 +91,20 @@ trait ControllerUploads{
                 $file_original_name = $_FILES[$group_name]['name'];
                 $extension = pathinfo($file_original_name, PATHINFO_EXTENSION);
                 $filename .= '.' . $extension;
-                
-                $image = \WideImage\WideImage::load($tmp_file);
+                $result = array();
+                // $validImageHandle = \WideImage\WideImage::isValidImageHandle($tmp_file);
 
-                //checa se é upload de avatar ou capa de fundo e ajusta resize da imagem
-                if($isAvatarUpload){
-                    $image->resize(600, 600)->saveToFile($folder . $filename);
-                }else {
-                    $image->resize(850, 315)->saveToFile($folder . $filename);
-                }
+                if(!empty($tmp_file)){
+                    $image = \WideImage\WideImage::load($tmp_file);
 
-                $result = [];
-                
-                // testa se o upload é uma imagem
-                if(getimagesize($_FILES[$group_name]['tmp_name'])){
+                    //checa se é upload de avatar ou capa de fundo e ajusta resize da imagem
+                    if($isAvatarUpload){
+                        $image->resize(600, 600)->saveToFile($folder . $filename);
+                    }else {
+                        $image->resize(850, 315)->saveToFile($folder . $filename);
+                    }
+                    
+                    // testa se o upload é uma imagem
                     $result['crop'] = [
                         'source' => $filename,
                         'group_name' => $group_name,
@@ -112,12 +112,14 @@ trait ControllerUploads{
                         'image_url' => $app->storage->getUrlFromRelativePath($filename)
                     ];
 
-                } else {
-                    $result['error'][$group_name] = \MapasCulturais\i::_e("Upload não é uma imagem válida");
+                    // Crop só funciona com um único arquivo por vez
+                    break;
                 }
-                
-                // Crop só funciona com um único arquivo por vez
-                break;
+                 else {
+                    $result['group'] = $group_name;
+                    $result['error'] = json_encode(true);
+                    $result['data'] = "Upload não é uma imagem válida";
+                }
             }
 
             $this->json($result);

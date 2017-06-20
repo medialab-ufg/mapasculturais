@@ -738,7 +738,6 @@ MapasCulturais.AjaxUploader = {
                     percent.html(percentVal);
                 },
                 success: function (response, statusText, xhr, $form)  {
-
                     var percentVal = '100%';
                     bar.width(percentVal);
                     percent.html(percentVal);
@@ -776,8 +775,10 @@ MapasCulturais.AjaxUploader = {
                             case 'crop': 
                                 var ratio = parseInt($form.data('ratio'));
                                 var size = $form.data('size');
+                                var jcrop_api;
                                 
                                 $('#modal-agent-crop-image').attr('src', response.crop.image_url);
+
                                 $('#original_image_source').val(response.crop.source);
                                 $('#group_name').val(response.crop.group_name);
                                 $('#original_name').val(response.crop.original_name);
@@ -788,6 +789,7 @@ MapasCulturais.AjaxUploader = {
                                     aspectRatio: ratio,
                                     minSize: size
                                 }, function(){
+                                    jcrop_api = this;
                                     this.animateTo([100,100,200,200]);
                                 });
 
@@ -805,6 +807,7 @@ MapasCulturais.AjaxUploader = {
                                 });
                                 $('#cancel-crop').on('click', function(){
                                     $("#agent-crop-image").hide();
+                                    jcrop_api.destroy();
                                 });
 
                             break;
@@ -860,8 +863,6 @@ MapasCulturais.AjaxUploader = {
                 //timeout:   3000
             });
         });
-
-
     }
 };
 
