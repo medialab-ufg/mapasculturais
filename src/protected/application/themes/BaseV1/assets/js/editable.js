@@ -773,7 +773,7 @@ MapasCulturais.AjaxUploader = {
                             break;
 
                             case 'crop': 
-                                var ratio = parseInt($form.data('ratio'));
+                                /*var ratio = parseInt($form.data('ratio'));
                                 var size = $form.data('size');
                                 var jcrop_api;
                                 
@@ -808,10 +808,15 @@ MapasCulturais.AjaxUploader = {
                                 $('#cancel-crop').on('click', function(){
                                     $("#agent-crop-image").hide();
                                     jcrop_api.destroy();
-                                });
+                                });*/
 
+
+                                /**
+ * Created by ezgoing on 14/9/2014.
+ */
+
+                            $('#modal-crop-image').show();
                             break;
-
                             case 'image-src':
                                 try{
                                     if($form.data('transform'))

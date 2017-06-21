@@ -1,8 +1,8 @@
-<div class="modal-crop" id="agent-crop-image" title="<?php \MapasCulturais\i::esc_attr_e("Recortar Imagem");?>">
-    <form id="form-crop-image" 
+<!--<div class="modal-crop" id="agent-crop-image" title="<?php \MapasCulturais\i::esc_attr_e("Recortar Imagem");?>">
+    <form id="form-crop-image"
         class="js-ajax-upload"
         method="post"
-        action="<?php echo $this->controller->createUrl('upload', array('id' => $entity->id)) ?>" 
+        action="<?php //echo $this->controller->createUrl('upload', array('id' => $entity->id)) ?>" 
         enctype="multipart/form-data">
             <img class="modal-content" id="modal-agent-crop-image" src="">
             <input id="x1" name="x1" type="hidden" value="">
@@ -18,4 +18,71 @@
                 <a id="cancel-crop" class="btn btn-default"><?php \MapasCulturais\i::esc_attr_e("Cancelar");?></a>
             </div>
     </form>
+</div>-->
+
+<div class="modal-crop" id="modal-crop-image">
+    <div class="imageBox">
+        <div class="thumbBox"></div>
+        <div class="spinner" style="display: none">Loading...</div>
+    </div>
+    <form class="js-ajax-upload" method="post" id="form-crop-image" action="<?php echo $this->controller->createUrl('upload', array('id' => $entity->id)) ?>" 
+          enctype="multipart/form-data">
+          <img id="image-resized" src="" />
+    </form>
+    <div class="action">
+        <input type="file" id="file" style="float:left; width: 250px">
+        <input type="button" id="btnCrop" value="Crop" style="float: right">
+        <input type="button" id="btnZoomIn" value="+" style="float: right">
+        <input type="button" id="btnZoomOut" value="-" style="float: right">
+    </div>
+    <div class="cropped">
+
+    </div>
 </div>
+
+<script type="text/javascript">
+        var options =
+        {
+            thumbBox: '.thumbBox',
+            spinner: '.spinner',
+            imgSrc: ''
+        };
+
+        var cropper;
+        $('#file').on('change', function(){
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                options.imgSrc = e.target.result;
+                cropper = $('.imageBox').cropbox(options);
+            }
+            reader.readAsDataURL(this.files[0]);
+            this.files = [];
+        });
+
+        $('#btnCrop').on('click', function(){
+            var elem = cropper.getBlob();
+            var url = "<?php echo $this->controller->createUrl('upload', array('id' => $entity->id)) ?>";
+            var formData = new FormData();
+
+            formData.append('avatar', elem);
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data : formData,
+                processData: false,  
+                contentType: false,
+                success: function(result){
+                
+                }
+        });
+
+        $('#btnZoomIn').on('click', function(){
+            cropper.zoomIn();
+        });
+
+        $('#btnZoomOut').on('click', function(){
+            cropper.zoomOut();
+        });
+    });
+</script>

@@ -1215,6 +1215,9 @@ class Theme extends MapasCulturais\Theme {
         //JCrop
         $this->enqueueScript('vendor', 'jquery.Jcrop', '/vendor/jquery.jcrop/dist/jquery.Jcrop.js');
         $this->enqueueStyle('vendor', 'jquery.Jcrop', '/vendor/jquery.jcrop/dist/jquery.Jcrop.css');
+
+        //cropbox
+        $this->enqueueScript('vendor', 'cropbox', '/vendor/cropbox.js', array('jquery'));
     }
 
     function includeCommonAssets() {
