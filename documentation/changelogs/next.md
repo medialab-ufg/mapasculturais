@@ -19,3 +19,11 @@ Agora é possível adicionar uma descrição para as fotos da galeria, que são 
 
 * Agora a interface não fala mais em "ocorrência" de eventos, mas em "local e data"
 * A aba Permissões, que mostra os agentes que tem controle sobre a entidade, passa a se chamar Reponsáveis
+
+# Melhoria na exportação de planilhas
+
+A geração de planilhas contém diversas melhorias, entre as quais:
+
+* Diversos novos campos incluídos para possibilitar a criação de filtros mais precisos
+* Charset setado para UTF-16 na geração de planilhas excel, evitando a quebra de caracteres
+* Planilha agora apresenta uma ocorrência por linha
