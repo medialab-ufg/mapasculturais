@@ -2,7 +2,7 @@
     "use strict";
 
     var app = angular.module('entity.app', MapasCulturais.angularAppDependencies);
-
+    
     app.factory('UrlService', [function(){
         return function(controller){
             this.create = function(action, params){
@@ -160,5 +160,8 @@
         };
     }]);
 
+angular.element(document).ready(function() {
+  angular.bootstrap(document, ["entity.app"]);
+});   
 
 })(angular);

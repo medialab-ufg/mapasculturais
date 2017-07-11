@@ -1390,6 +1390,7 @@ class Theme extends MapasCulturais\Theme {
         $this->jsObject['templateUrl']['singleselect'] = $this->asset('js/directives/singleselect.html', false);
         $this->jsObject['templateUrl']['editableMultiselect'] = $this->asset('js/directives/editableMultiselect.html', false);
         $this->jsObject['templateUrl']['editableSingleselect'] = $this->asset('js/directives/editableSingleselect.html', false);
+        $this->jsObject['templateUrl']['tmpTeste'] = $this->asset('js/directives/tmpTeste.html', false);
 
         $this->enqueueScript('app', 'entity.app', 'js/ng.entity.app.js', array(
             'mapasculturais',
