@@ -159,9 +159,4 @@
             }
         };
     }]);
-
-angular.element(document).ready(function() {
-  angular.bootstrap(document, ["entity.app"]);
-});   
-
 })(angular);
