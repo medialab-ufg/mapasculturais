@@ -1,4 +1,4 @@
-var fva = angular.module("ng.fva", MapasCulturais.angularAppDependencies);
+var fva = angular.module("ng.fva", ['ngRoute']);
 
 fva.controller("rootController", function($scope, $route, $routeParams, $location) {
     console.log($location.host());
