@@ -12,7 +12,7 @@ class Plugin extends \MapasCulturais\Plugin {
     public function _init() {
         $app = App::i();
         
-        $app->hook('template(space.<<create|edit|single>>.tabs):end', function(){
+        $app->hook('template(space.single.tabs):end', function(){
             $this->part('fva-tab');
         });
 
@@ -20,11 +20,9 @@ class Plugin extends \MapasCulturais\Plugin {
             $spaceEntity = $app->view->controller->requestedEntity;
             $this->part('fva-form', ['entity' => $spaceEntity]);
         });
-
-        $app->hook('view.render(space/single):before', function() use ($app) {
-            $app->view->enqueueScript('app', 'ng.fva', 'js/ng.fva.js', array('mapasculturais'));
-        });
-
+        
+        $app->view->enqueueScript('app', 'ng.fva', 'js/ng.fva.js', ['entity.app']);
+        $app->view->jsObject['angularAppDependencies'][] = 'ng.fva';
     }
 
     public function register() {
