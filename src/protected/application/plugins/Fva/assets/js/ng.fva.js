@@ -1,8 +1,12 @@
 var fva = angular.module("ng.fva", ['ngRoute']);
 
-fva.controller("rootController", function($scope, $route, $routeParams, $location) {
+/*fva.controller("rootController", function($scope, $route, $routeParams, $location) {
     console.log($location.host());
-});
+});*/
+
+fva.controller('rootController', function($scope) {
+    console.log('foii');
+});    
 
 fva.config(function($routeProvider, $locationProvider){
     $routeProvider

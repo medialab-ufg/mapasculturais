@@ -21,8 +21,10 @@ class Plugin extends \MapasCulturais\Plugin {
             $this->part('fva-form', ['entity' => $spaceEntity]);
         });
         
-        $app->view->enqueueScript('app', 'ng.fva', 'js/ng.fva.js', ['entity.app']);
-        $app->view->jsObject['angularAppDependencies'][] = 'ng.fva';
+        $app->hook('mapasculturais.head', function() use($app){
+            $app->view->enqueueScript('app', 'ng.fva', 'js/ng.fva.js');
+            $app->view->jsObject['angularAppDependencies'][] = 'ng.fva';
+        });
     }
 
     public function register() {
