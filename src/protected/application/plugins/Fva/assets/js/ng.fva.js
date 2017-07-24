@@ -1,27 +1,31 @@
-var fva = angular.module("ng.fva", ['ngRoute']);
+"use strict";
 
-/*fva.controller("rootController", function($scope, $route, $routeParams, $location) {
+var fva = angular.module("ng.fva", ['ngRoute', 'ngAnimate']);
+
+fva.controller("rootController", function($scope, $route, $routeParams, $location) {
     console.log($location.host());
-});*/
+    console.log($location.path());
 
-fva.controller('rootController', function($scope) {
-    console.log('foii');
-});    
+    $location.search({});
+});
 
 fva.config(function($routeProvider, $locationProvider){
+    let pluginTemplatePath = '/protected/application/plugins/Fva/assets/partials';
+
     $routeProvider
-    .when('/red', {
-        templateUrl : 'http://mapa.fdev/assets/html/tmpTeste.html'
-    }).otherwise({template: '<h1>template base</h1>'});
+    .when('/inicio', {
+        templateUrl : pluginTemplatePath + '/index.html'
+    })
+    .when('/pag2', {
+        templateUrl : pluginTemplatePath + '/pag2.html'
+    })
+    .when('/pag3', {
+        templateUrl : pluginTemplatePath + '/pag3.html'
+    })
+    .otherwise({templateUrl: pluginTemplatePath + '/index.html'});
 
     /*$locationProvider.html5Mode({
         enabled: true,
         requireBase: false
     });*/
 });
-
-/*angular.element(document).ready(function() {
-  angular.bootstrap(document.getElementById("fva-survey"), ["fva"]);
-});   */
-//angular.element(document).ready(function() { angular.bootstrap(document.getElementById("fvm-survey"), ['fvm']); })
-//angular.bootstrap(document.getElementById("fvm-survey"), ['fvm']);
