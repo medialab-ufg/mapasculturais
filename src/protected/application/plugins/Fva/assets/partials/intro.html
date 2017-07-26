@@ -1,0 +1,35 @@
+<div id="intro-survey" ng-controller="introCtrl">
+    <p>Para efeito deste Formulário, deverá ser considerada VISITAÇÃO / VISITA todo usuário das atividades/áreas/ações desenvolvidas pelo Museu 
+    ou em seu complexo que tenham relação com a equipe, o acervo, os trabalhos, os projetos e as iniciativas do Museu.</p>
+
+    <div class="display-warning">
+        <p>*É obrigatório selecionar uma opção antes de prosseguir</p>
+    </div>
+    <p class="required" style="font-weight: bold">{{questionFirstTime}}</p>
+    <div id="intro-option">
+        <input name="survey-participation" type="radio" ng-model="firstTime.answer" ng-value="true">Sim
+        <input name="survey-participation" type="radio" ng-model="firstTime.answer" ng-value="false">Não
+    </div>
+    <div ng-if="firstTime.answer">
+        <p style="font-weight: bold">Indique o(s) motivo(s) para a NÃO participação nas edições anteriores:</p>
+        <div ng-if="displayFirstTimeSurveyWarning" class="display-warning" style="color: red; font-weight: bold;">
+            <p>*É obrigatório selecionar ao menos uma opção antes de prosseguir. Ao escolher 'Outros:', é necessário fornecer uma descrição</p>
+        </div>
+        <ul>
+            <li ng-repeat="question in questionarioJaParticipou"><input type="checkbox" ng-model="question.answer">{{question.label}}</li>
+        </ul>
+    </div>
+    <div ng-if="firstTime.answer === false">
+        <p style="font-weight: bold">Quais edições do FVA o Museu já participou?</p>
+        <div ng-if="displayNotFirstTimeSurveyWarning" class="display-warning" style="color: red; font-weight: bold;">
+            <p>*Pergunta obrigatória. Por favor, marque ao menos um item.</p>
+        </div>
+        <ul>
+            <li ng-repeat="question in questionarioNaoParticipou"><input type="checkbox" ng-model="question.answer">{{question.label}}</li>
+        </ul>
+    </div>
+    <div class="nav-panel">
+        <input type="submit" ui-sref="termo-compromisso" value="<< Anterior">
+        <input type="submit" value="Próximo >>" ng-click="validateIntro()">
+    </div>
+</div>

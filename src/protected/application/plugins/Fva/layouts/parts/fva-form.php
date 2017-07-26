@@ -42,10 +42,17 @@
 
 /*.ng-enter           { animation: scaleUp 0.5s both ease-in; z-index: 8888; }*/
 /*.ng-leave           { animation: slideOutLeft 0.5s both ease-in; }*/
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
 </style>
 
-<div>
-    <form id="fva-survey" ng-controller="rootController">
-        <div ng-view></div>
+<div id="fva-survey">
+    <form id="fva-form">
+        <div ui-view></div>
     </form>
 </div>

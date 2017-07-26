@@ -1,0 +1,11 @@
+<div id="responsavel-survey" ng-controller="responsavelCtrl">
+    <div id="dados-responsavel">
+        <ul>
+            <li ng-repeat="dado in dadosResponsavel">{{dado.label}}<br/><input type="text" ng-model="dado.answer"></li>
+        </ul>
+    </div>
+    <div class="nav-panel">
+        <input type="submit" ui-sref="intro" value="<< Anterior">
+        <input type="submit" value="Próximo >>" ng-click="validateResponsavel()">
+    </div>
+</div>
