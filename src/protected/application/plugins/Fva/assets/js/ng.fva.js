@@ -17,20 +17,25 @@ fva.controller('termoCompromissoCtrl', ['$scope', '$state', 'fvaQuestions', func
 }]);
 
 fva.controller('introCtrl', ['$scope', '$state', 'fvaQuestions', 'questionValidator', function($scope, $state, fvaQuestions, questionValidator){
-    $scope.firstTime = fvaQuestions.introducao.jaParticipouFVA;
-    $scope.questionFirstTime = fvaQuestions.introducao.jaParticipouFVA.label;
-    $scope.questionarioJaParticipou = fvaQuestions.introducao.questionarioJaParticipou;
-    $scope.questionarioNaoParticipou = fvaQuestions.introducao.questionarioNaoParticipou;
-    $scope.displayFirstTimeSurveyWarning = false;
-    $scope.displayNotFirstTimeSurveyWarning = false;
+    $scope.dadosIntro = fvaQuestions.introducao; 
 
     //Checa se não foi deixado resposta em branco e exibe a respectiva mensagem de alerta
     $scope.validateIntro = function(){
-        $scope.displayFirstTimeSurveyWarning = questionValidator.multiplaEscolha($scope.questionarioJaParticipou) === true ? false : true;
-        $scope.displayNotFirstTimeSurveyWarning = questionValidator.multiplaEscolha($scope.questionarioNaoParticipou) === true ? false : true;
+        let isValid = false;
 
-        if($scope.firstTime && $scope.displayFirstTimeSurveyWarning === false || $scope.firstTime === false && $scope.displayNotFirstTimeSurveyWarning === false){
-            $state.go('responsavel');
+        //faz a validação de acordo com as informações que estão sendo exibidas na tela
+        if($scope.dadosIntro.jaParticipouFVA.answer){
+            $scope.displayFirstTimeSurveyWarning = questionValidator.multiplaEscolha($scope.dadosIntro.questionarioJaParticipou, $scope.dadosIntro.questionarioJaParticipouOutros);
+            isValid = $scope.displayFirstTimeSurveyWarning;
+        }
+        else{
+            $scope.displayNotFirstTimeSurveyWarning = questionValidator.multiplaEscolha($scope.dadosIntro.questionarioNaoParticipou.edicoes);
+            isValid = $scope.displayNotFirstTimeSurveyWarning;
+        }
+        
+        if(isValid){
+            console.log(fvaQuestions);
+            //$state.go('responsavel');
         }
     }
 }]);
@@ -99,16 +104,33 @@ fva.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
 }]);
 
 fva.service('questionValidator', function(){
-    this.multiplaEscolha = function(questionario){
-        let hasCheckedAnswer = false;
+    //valida se pelo menos uma opçao da multipla escolha foi selecionado
+    this.multiplaEscolha = function(questionario, outros){
+        console.log(questionario);
+        let hasErrors = true;
         
         Object.keys(questionario).forEach(function(k){
             if(questionario[k].answer === true){
-                hasCheckedAnswer = true;
+                hasErrors = false;
             }
         });
+
+        //valida o campo 'Outros' que é opcional
+        if(outros !== undefined){
+            if(outros.answer && outros.text.length == 0){
+                hasErrors = true;
+            }
+            else if(outros.answer && outros.text.length > 0){
+                hasErrors = false;
+            }
+        }
         
-        return hasCheckedAnswer;
+        return hasErrors;
+    }
+
+    //Se o campo outros estiver marcado mas não tiver texto, retorna true
+    this.validaOutros = function(outros){
+        return outros.answer && outros.text.length == 0 ? true : false;
     }
 
     this.validateEmail = function(email){
@@ -147,25 +169,28 @@ fva.factory('fvaQuestions', function(){
                 seminternet: {
                     label: 'Dificuldade de acesso à internet',
                     answer: false
-                },
-                outros: {
-                    label: 'Outros',
-                    answer: false,
-                    text: ''
                 }
             },
+            questionarioJaParticipouOutros: {
+                label: 'Outros',
+                answer: false,
+                text: ''
+            },
             questionarioNaoParticipou: {
-                ed2014: {
-                    label: 'FVA 2014 - aplicação ocorrida em 2015 referente à visitação anual ao Museu em 2014',
-                    answer: false
-                },
-                ed2015: {
-                    label: 'FVA 2015 - aplicação ocorrida em 2016 referente à visitação anual ao Museu em 2015',
-                    answer: false
-                },
-                ed2016: {
-                    label: 'FVA 2016 - aplicação ocorrida em 2017 referente à visitação anual ao Museu em 2016',
-                    answer: false
+                label: "Quais edições do FVA o Museu já participou?",
+                edicoes: {
+                    ed2014: {
+                        label: 'FVA 2014 - aplicação ocorrida em 2015 referente à visitação anual ao Museu em 2014',
+                        answer: false
+                    },
+                    ed2015: {
+                        label: 'FVA 2015 - aplicação ocorrida em 2016 referente à visitação anual ao Museu em 2015',
+                        answer: false
+                    },
+                    ed2016: {
+                        label: 'FVA 2016 - aplicação ocorrida em 2017 referente à visitação anual ao Museu em 2016',
+                        answer: false
+                    }
                 }
             }
         },
@@ -216,12 +241,12 @@ fva.factory('fvaQuestions', function(){
                 lista: {
                     label: 'Lista de presença em atividades do museu',
                     answer: false
-                },
-                outros: {
-                    label: 'Outros',
-                    answer: false,
-                    text: ''
                 }
+            },
+            tecnicaContagemOutros: {
+                label: 'Outros',
+                answer: false,
+                text: ''
             },
             quantitativo: {
                 label: 'Quantitativo total de visitações/visitas no ano referência (2016)',
@@ -285,12 +310,12 @@ fva.factory('fvaQuestions', function(){
                 redes: {
                     label: "Redes sociais(Instagram, Facebook, Twitter, Google+, Youtube, etc.)",
                     answer: false
-                },
-                outros: {
-                    label: "Outros",
-                    answer: false,
-                    text: ''
                 }
+            },
+            midiasOutros: {
+                label: "Outros",
+                answer: false,
+                text: ''
             },
             opiniao: {
                 label: "Gostaríamos de saber sua opinião sobre o nosso questionário. Registre neste espaço as informações faltantes que você considera" +
