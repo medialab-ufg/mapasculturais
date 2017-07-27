@@ -22,6 +22,7 @@ class Plugin extends \MapasCulturais\Plugin {
         });
         
         $app->hook('mapasculturais.head', function() use($app){
+            $app->view->enqueueScript('app', 'angular-ui-mask', 'js/mask.js');
             $app->view->enqueueScript('app', 'ng.fva', 'js/ng.fva.js');
             $app->view->jsObject['angularAppDependencies'][] = 'ng.fva';
         });

@@ -1,0 +1,26 @@
+<div id="fva-avaliacao" ng-controller="avaliacaoCtrl">
+    <div id="dados-avaliacao">
+        <div id="avaliacao-midias">
+            <p class="required" style="font-weight: bold">Indique o(s) meio(s) pelo(s) qual(is) soube do FVA:
+                        Escolha a(s) que mais se adeque(m)</p>
+            <div ng-if="displayMidiaWarning" class="display-warning" style="color: red; font-weight: bold;">
+                <p>*É obrigatório selecionar ao menos uma opção antes de prosseguir. Ao escolher 'Outros:', é necessário fornecer uma descrição</p>
+            </div>
+            <ul>
+                <li ng-repeat="question in dadosAvaliacao.midias"><input type="checkbox" ng-model="question.answer">{{question.label}}</li>
+                <li>
+                    <input type="checkbox" ng-model="dadosAvaliacao.midias.outros.answer">{{dadosAvaliacao.tecnicaContagem.outros.label}}
+                    <input type="text" ng-model="dadosAvaliacao.midias.outros.text">
+                </li>
+            </ul>
+        </div>
+        <div id="opiniao-questionario">
+            <p class="required" style="font-weight: bold">{{dadosAvaliacao.opiniao.label}}</p>
+            <textarea rows="10" cols="70" ng-model="dadosAvaliacao.opiniao.answer"></textarea><br/>
+        </div>
+    </div>
+    <div class="nav-panel">
+        <input type="submit" ui-sref="intro" value="<< Anterior">
+        <input type="submit" value="Próximo >>" ng-click="validateVisitacao()">
+    </div>
+</div>

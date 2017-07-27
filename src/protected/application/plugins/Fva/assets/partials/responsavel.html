@@ -1,7 +1,18 @@
 <div id="responsavel-survey" ng-controller="responsavelCtrl">
     <div id="dados-responsavel">
         <ul>
-            <li ng-repeat="dado in dadosResponsavel">{{dado.label}}<br/><input type="text" ng-model="dado.answer"></li>
+            <li>{{dadosResponsavel.nome.label}}<br/><input type="text" ng-model="dadosResponsavel.nome.answer"></li>
+                <div ng-if="displayNameWarning" class="display-warning" style="color: red; font-weight: bold;">
+                    <p>*O campo 'Nome do Responsável' é obrigatório</p>
+                </div>
+            <li>{{dadosResponsavel.telefone.label}}<br/><input type="text" ui-mask="(99)9999-9999" ng-model="dadosResponsavel.telefone.answer"></li>
+                <div ng-if="displayTelWarning" class="display-warning" style="color: red; font-weight: bold;">
+                    <p>*O campo 'telefone' é obrigatório</p>
+                </div>
+            <li>{{dadosResponsavel.email.label}}<br/><input type="text" ng-model="dadosResponsavel.email.answer"></li>
+                <div ng-if="displayEmailWarning" class="display-warning" style="color: red; font-weight: bold;">
+                    <p>*O campo 'email' é obrigatório</p>
+                </div>
         </ul>
     </div>
     <div class="nav-panel">
