@@ -1,4 +1,4 @@
-<div id="intro-survey" ng-controller="introCtrl">
+<div id="intro-survey">
     <p>Para efeito deste Formulário, deverá ser considerada VISITAÇÃO / VISITA todo usuário das atividades/áreas/ações desenvolvidas pelo Museu 
     ou em seu complexo que tenham relação com a equipe, o acervo, os trabalhos, os projetos e as iniciativas do Museu.</p>
     <p class="required" style="font-weight: bold">{{dadosIntro.jaParticipouFVA.label}}</p>
@@ -7,12 +7,12 @@
         <input name="survey-participation" type="radio" ng-model="dadosIntro.jaParticipouFVA.answer" ng-value="false">Não
     </div>
     <div ng-if="dadosIntro.jaParticipouFVA.answer">
-        <p style="font-weight: bold">Indique o(s) motivo(s) para a NÃO participação nas edições anteriores:</p>
+        <p style="font-weight: bold">{{dadosIntro.questionarioJaParticipou.label}}</p>
         <div ng-if="displayFirstTimeSurveyWarning" class="display-warning" style="color: red; font-weight: bold;">
             <p>*É obrigatório selecionar ao menos uma opção antes de prosseguir. Ao escolher 'Outros:', é necessário fornecer uma descrição</p>
         </div>
         <ul>
-            <li ng-repeat="question in dadosIntro.questionarioJaParticipou"><input type="checkbox" ng-model="question.answer">{{question.label}}</li>
+            <li ng-repeat="question in dadosIntro.questionarioJaParticipou.motivos"><input type="checkbox" ng-model="question.answer">{{question.label}}</li>
             <li>
                 <input type="checkbox" ng-model="dadosIntro.questionarioJaParticipouOutros.answer">{{dadosIntro.questionarioJaParticipouOutros.label}}
                 <input type="text" ng-model="dadosIntro.questionarioJaParticipouOutros.text">

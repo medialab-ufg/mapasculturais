@@ -1,4 +1,4 @@
-<div id="fva-visitacao" ng-controller="visitacaoCtrl">
+<div id="fva-visitacao">
     <div id="dados-visitacao">
         <div id="contagem-visitacao">
             <div class="display-warning" ng-if="displayContagemWarning">
@@ -26,7 +26,7 @@
                     <div ng-if="displayTotalVisitasWarning" class="display-warning" style="color: red; font-weight: bold;">
                         <p>*É obrigatório informar o total de visitações</p>
                     </div>
-                    <input type="text" ng-model="dadosVisitacao.quantitativo.answer"><br/>
+                    <input type="number" ng-model="dadosVisitacao.quantitativo.answer"><br/>
                     <p style="font-weight: bold">*Ano Referência é o ano calendário anterior ao ano de preenchimento deste Formulário.</p>
                 </div>
             </div>

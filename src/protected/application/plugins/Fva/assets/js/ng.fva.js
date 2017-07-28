@@ -1,6 +1,6 @@
 "use strict";
 
-var fva = angular.module("ng.fva", ['ui.router', 'ngAnimate', 'ui.mask']);
+var fva = angular.module("ng.fva", ['ui.router', 'ui.mask']);
 
 fva.controller('termoCompromissoCtrl', ['$scope', '$state', 'fvaQuestions', function($scope, $state, fvaQuestions){
     $scope.condicao = fvaQuestions.termosCompromisso;
@@ -25,17 +25,16 @@ fva.controller('introCtrl', ['$scope', '$state', 'fvaQuestions', 'questionValida
 
         //faz a validação de acordo com as informações que estão sendo exibidas na tela
         if($scope.dadosIntro.jaParticipouFVA.answer){
-            $scope.displayFirstTimeSurveyWarning = questionValidator.multiplaEscolha($scope.dadosIntro.questionarioJaParticipou, $scope.dadosIntro.questionarioJaParticipouOutros);
-            isValid = $scope.displayFirstTimeSurveyWarning;
+            $scope.displayFirstTimeSurveyWarning = questionValidator.multiplaEscolha($scope.dadosIntro.questionarioJaParticipou.motivos, $scope.dadosIntro.questionarioJaParticipouOutros);
+            isValid = !$scope.displayFirstTimeSurveyWarning;
         }
         else{
             $scope.displayNotFirstTimeSurveyWarning = questionValidator.multiplaEscolha($scope.dadosIntro.questionarioNaoParticipou.edicoes);
-            isValid = $scope.displayNotFirstTimeSurveyWarning;
+            isValid = !$scope.displayNotFirstTimeSurveyWarning;
         }
-        
+
         if(isValid){
-            console.log(fvaQuestions);
-            //$state.go('responsavel');
+            $state.go('responsavel');
         }
     }
 }]);
@@ -58,10 +57,20 @@ fva.controller('visitacaoCtrl', ['$scope', '$state', 'fvaQuestions', 'questionVa
     $scope.dadosVisitacao = fvaQuestions.visitacao;
 
     $scope.validateVisitacao = function(){
-        $scope.displayTecnicaContagemWarning = questionValidator.multiplaEscolha($scope.dadosVisitacao.tecnicaContagem) === true ? false : true;
-        $scope.displayTotalVisitasWarning = $scope.dadosVisitacao.quantitativo.answer === '' ? true : false;
+        let isValid = false;
 
-        if($scope.displayTecnicaContagemWarning === false && $scope.displayTotalVisitasWarning === false){
+        if($scope.dadosVisitacao.realizaContagem.answer){
+            $scope.displayTecnicaContagemWarning = questionValidator.multiplaEscolha($scope.dadosVisitacao.tecnicaContagem, $scope.dadosVisitacao.tecnicaContagemOutros);
+            $scope.displayTotalVisitasWarning = $scope.dadosVisitacao.quantitativo.answer === '' ? true : false;
+
+            isValid = $scope.displayTecnicaContagemWarning && $scope.displayTotalVisitasWarning;
+        }
+        else{
+            //nenhuma validação é necessária
+            isValid = true;
+        }
+
+        if(isValid){
             $state.go('avaliacao');
         }
     }
@@ -71,10 +80,18 @@ fva.controller('avaliacaoCtrl', ['$scope', '$state', 'fvaQuestions', 'questionVa
     $scope.dadosAvaliacao = fvaQuestions.avaliacao;
 
     $scope.validateVisitacao = function(){
-        $scope.displayMidiaWarning = questionValidator.multiplaEscolha($scope.dadosAvaliacao.midias) === true ? false : true;
+        let isValid = false;
+        $scope.displayMidiaWarning = questionValidator.multiplaEscolha($scope.dadosAvaliacao.midias, $scope.dadosAvaliacao.midiasOutros);
+        isValid = !$scope.displayMidiaWarning;
 
-        console.log(fvaQuestions);
+        if(isValid){
+            $state.go('revisao');
+        }
     }
+}]);
+
+fva.controller('revisaoCtrl', ['$scope', 'fvaQuestions', function($scope, fvaQuestions){
+    $scope.respostasFVA = fvaQuestions;
 }]);
 
 fva.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider){
@@ -87,26 +104,34 @@ fva.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
         templateUrl : pluginTemplatePath + '/index.html'
     })
     .state('termo-compromisso', {
+        controller: 'termoCompromissoCtrl',
         templateUrl : pluginTemplatePath + '/termo-compromisso.html'
     })
     .state('intro', {
+        controller: 'introCtrl',
         templateUrl : pluginTemplatePath + '/intro.html'
     })
     .state('responsavel', {
+        controller: 'responsavelCtrl',
         templateUrl : pluginTemplatePath + '/responsavel.html'
     })
     .state('visitacao', {
+        controller: 'visitacaoCtrl',
         templateUrl : pluginTemplatePath + '/visitacao.html'
     })
     .state('avaliacao', {
+        controller: 'avaliacaoCtrl',
         templateUrl : pluginTemplatePath + '/avaliacao.html'
+    })
+    .state('revisao', {
+        controller: 'revisaoCtrl',
+        templateUrl : pluginTemplatePath + '/revisao.html'
     })
 }]);
 
 fva.service('questionValidator', function(){
     //valida se pelo menos uma opçao da multipla escolha foi selecionado
     this.multiplaEscolha = function(questionario, outros){
-        console.log(questionario);
         let hasErrors = true;
         
         Object.keys(questionario).forEach(function(k){
@@ -150,25 +175,28 @@ fva.factory('fvaQuestions', function(){
                 answer: null
             },
             questionarioJaParticipou: {
-                naosabia: {
-                    label: 'Não sabíamos da iniciativa',
-                    answer: false
-                },
-                prazo: {
-                    label: 'Perdemos o prazo de participação',
-                    answer: false
-                },
-                informacao: {
-                    label: 'Não tínhamos as informações solicitadas',
-                    answer: false
-                },
-                naorealizava: {
-                    label: 'Não realizávamos a contagem',
-                    answer: false
-                },
-                seminternet: {
-                    label: 'Dificuldade de acesso à internet',
-                    answer: false
+                label: 'Indique o(s) motivo(s) para a NÃO participação nas edições anteriores',
+                motivos: {
+                    naosabia: {
+                        label: 'Não sabíamos da iniciativa',
+                        answer: false
+                    },
+                    prazo: {
+                        label: 'Perdemos o prazo de participação',
+                        answer: false
+                    },
+                    informacao: {
+                        label: 'Não tínhamos as informações solicitadas',
+                        answer: false
+                    },
+                    naorealizava: {
+                        label: 'Não realizávamos a contagem',
+                        answer: false
+                    },
+                    seminternet: {
+                        label: 'Dificuldade de acesso à internet',
+                        answer: false
+                    }
                 }
             },
             questionarioJaParticipouOutros: {
@@ -320,7 +348,7 @@ fva.factory('fvaQuestions', function(){
             opiniao: {
                 label: "Gostaríamos de saber sua opinião sobre o nosso questionário. Registre neste espaço as informações faltantes que você considera" +
                        "pertinentes e deixe também comentários/sugestões/críticas para aprimorarmos o Formulário de Visitação Anual em suas próximas edições",
-                answer: ''
+                text: ''
             }
         }
     }
