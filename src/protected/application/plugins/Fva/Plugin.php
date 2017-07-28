@@ -3,10 +3,6 @@ namespace Fva;
 
 use MapasCulturais\app;
 
-/**
- * Plugin que permite um museu adicionar a 
- * URL de seu repositório no Tainacan
- */
 class Plugin extends \MapasCulturais\Plugin {
 
     public function _init() {
@@ -29,13 +25,6 @@ class Plugin extends \MapasCulturais\Plugin {
     }
 
     public function register() {
-        $app = App::i();
-        $app->view->registerSpaceMetadata('tainacan_url', array(
-            'label' => 'Link do Repositório Tainacan',
-            'type' => 'string',
-            'validations' => [
-                'v::url()' => 'URL inválida'
-            ]
-        ));
+        
     }
 }

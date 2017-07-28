@@ -1,14 +1,14 @@
 <div id="intro-survey">
     <p>Para efeito deste Formulário, deverá ser considerada VISITAÇÃO / VISITA todo usuário das atividades/áreas/ações desenvolvidas pelo Museu 
     ou em seu complexo que tenham relação com a equipe, o acervo, os trabalhos, os projetos e as iniciativas do Museu.</p>
-    <p class="required" style="font-weight: bold">{{dadosIntro.jaParticipouFVA.label}}</p>
+    <p class="pergunta-questionario">{{dadosIntro.jaParticipouFVA.label}}</p>
     <div id="intro-option">
         <input name="survey-participation" type="radio" ng-model="dadosIntro.jaParticipouFVA.answer" ng-value="true">Sim
         <input name="survey-participation" type="radio" ng-model="dadosIntro.jaParticipouFVA.answer" ng-value="false">Não
     </div>
     <div ng-if="dadosIntro.jaParticipouFVA.answer">
-        <p style="font-weight: bold">{{dadosIntro.questionarioJaParticipou.label}}</p>
-        <div ng-if="displayFirstTimeSurveyWarning" class="display-warning" style="color: red; font-weight: bold;">
+        <p class="pergunta-questionario">{{dadosIntro.questionarioJaParticipou.label}}</p>
+        <div ng-if="displayFirstTimeSurveyWarning" class="display-warning">
             <p>*É obrigatório selecionar ao menos uma opção antes de prosseguir. Ao escolher 'Outros:', é necessário fornecer uma descrição</p>
         </div>
         <ul>
@@ -20,8 +20,8 @@
         </ul>
     </div>
     <div ng-if="dadosIntro.jaParticipouFVA.answer === false">
-        <p style="font-weight: bold">{{dadosIntro.questionarioNaoParticipou.label}}</p>
-        <div ng-if="displayNotFirstTimeSurveyWarning" class="display-warning" style="color: red; font-weight: bold;">
+        <p class="pergunta-questionario">{{dadosIntro.questionarioNaoParticipou.label}}</p>
+        <div ng-if="displayNotFirstTimeSurveyWarning" class="display-warning">
             <p>*Pergunta obrigatória. Por favor, marque ao menos um item.</p>
         </div>
         <ul>

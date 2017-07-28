@@ -52,7 +52,7 @@ fva.controller('responsavelCtrl', ['$scope', '$state', 'fvaQuestions', 'question
         }
     }
 }]);
-
+//@todo refatorar validação
 fva.controller('visitacaoCtrl', ['$scope', '$state', 'fvaQuestions', 'questionValidator', function($scope, $state, fvaQuestions, questionValidator){
     $scope.dadosVisitacao = fvaQuestions.visitacao;
 
@@ -63,13 +63,15 @@ fva.controller('visitacaoCtrl', ['$scope', '$state', 'fvaQuestions', 'questionVa
             $scope.displayTecnicaContagemWarning = questionValidator.multiplaEscolha($scope.dadosVisitacao.tecnicaContagem, $scope.dadosVisitacao.tecnicaContagemOutros);
             $scope.displayTotalVisitasWarning = $scope.dadosVisitacao.quantitativo.answer === '' ? true : false;
 
-            isValid = $scope.displayTecnicaContagemWarning && $scope.displayTotalVisitasWarning;
+            if($scope.displayTecnicaContagemWarning === false && $scope.displayTotalVisitasWarning === false){
+                isValid = true;
+            }
         }
         else{
             //nenhuma validação é necessária
             isValid = true;
         }
-
+            
         if(isValid){
             $state.go('avaliacao');
         }
@@ -83,7 +85,7 @@ fva.controller('avaliacaoCtrl', ['$scope', '$state', 'fvaQuestions', 'questionVa
         let isValid = false;
         $scope.displayMidiaWarning = questionValidator.multiplaEscolha($scope.dadosAvaliacao.midias, $scope.dadosAvaliacao.midiasOutros);
         isValid = !$scope.displayMidiaWarning;
-
+        
         if(isValid){
             $state.go('revisao');
         }

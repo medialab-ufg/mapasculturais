@@ -1,9 +1,9 @@
 <div id="fva-avaliacao">
     <div id="dados-avaliacao">
         <div id="avaliacao-midias">
-            <p class="required" style="font-weight: bold">Indique o(s) meio(s) pelo(s) qual(is) soube do FVA:
+            <p class="pergunta-questionario">Indique o(s) meio(s) pelo(s) qual(is) soube do FVA:
                         Escolha a(s) que mais se adeque(m)</p>
-            <div ng-if="displayMidiaWarning" class="display-warning" style="color: red; font-weight: bold;">
+            <div ng-if="displayMidiaWarning" class="display-warning">
                 <p>*É obrigatório selecionar ao menos uma opção antes de prosseguir. Ao escolher 'Outros:', é necessário fornecer uma descrição</p>
             </div>
             <ul>
@@ -15,12 +15,12 @@
             </ul>
         </div>
         <div id="opiniao-questionario">
-            <p class="required" style="font-weight: bold">{{dadosAvaliacao.opiniao.label}}</p>
-            <textarea rows="10" cols="70" ng-model="dadosAvaliacao.opiniao.answer"></textarea><br/>
+            <p class="pergunta-questionario">{{dadosAvaliacao.opiniao.label}}</p>
+            <textarea rows="10" cols="70" ng-model="dadosAvaliacao.opiniao.text"></textarea><br/>
         </div>
     </div>
     <div class="nav-panel">
-        <input type="submit" ui-sref="intro" value="<< Anterior">
+        <input type="submit" ui-sref="visitacao" value="<< Anterior">
         <input type="submit" value="Próximo >>" ng-click="validateVisitacao()">
     </div>
 </div>

@@ -1,47 +1,4 @@
 <style>
-/* ANIMATIONS
-============================================================================= */
-
-/* leaving animations ----------------------------------------- */
-/* rotate and fall */
-@keyframes rotateFall {
-    0%      { transform: rotateZ(0deg); }
-    20%     { transform: rotateZ(10deg); animation-timing-function: ease-out; }
-    40%     { transform: rotateZ(17deg); }
-    60%     { transform: rotateZ(16deg); }
-    100%    { transform: translateY(100%) rotateZ(17deg); }
-}
-
-/* slide in from the bottom */
-@keyframes slideOutLeft {
-    to      { transform: translateX(-100%); }
-}
-
-/* rotate out newspaper */
-@keyframes rotateOutNewspaper {
-    to      { transform: translateZ(-3000px) rotateZ(360deg); opacity: 0; }
-}
-
-/* entering animations --------------------------------------- */
-/* scale up */
-@keyframes scaleUp {
-    from    { opacity: 0.3; -webkit-transform: scale(0.8); }
-}
-
-/* slide in from the right */
-@keyframes slideInRight {
-    from    { transform:translateX(100%); }
-    to      { transform: translateX(0); }
-}
-
-/* slide in from the bottom */
-@keyframes slideInUp {
-    from    { transform:translateY(100%); }
-    to      { transform: translateY(0); }
-}
-
-/*.ng-enter           { animation: scaleUp 0.5s both ease-in; z-index: 8888; }*/
-/*.ng-leave           { animation: slideOutLeft 0.5s both ease-in; }*/
 
 ul {
   list-style-type: none;
@@ -49,6 +6,35 @@ ul {
   margin: 0;
 }
 
+li {
+    margin-bottom: 10px;
+}
+
+.item-title{
+    background: #e8eff2;
+}
+
+.pergunta-fva{
+    text-align: left;
+}
+
+.resposta-fva{
+    text-align: center;
+}
+
+.nav-panel{
+    margin-top: 20px;
+}
+
+.display-warning{
+    color: red;
+    font-weight: bold;
+}
+
+.pergunta-questionario{
+    font-weight: bold;
+    margin-top: 15px;
+}
 </style>
 
 <div id="fva-survey">

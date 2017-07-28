@@ -8,8 +8,8 @@
     <p>Adicionalmente, esclarecemos que, em casos de mais de um preenchimento para a mesma instituição, será considerado
     o último preenchimento.</p>
 
-    <div ng-if="displayAlertaTermoCompromisso">
-        <p style="color: red;">*É necessário aceitar o Termo de Compromisso. Por favor, marque e tente novamente.</p>
+    <div ng-if="displayAlertaTermoCompromisso" class="display-warning">
+        <p>*É necessário aceitar o Termo de Compromisso. Por favor, marque e tente novamente.</p>
     </div> 
     <div id="ciente-termos">
         <input type="checkbox" ng-model="condicao.ciente"><label>Sim, estou ciente.</label>
