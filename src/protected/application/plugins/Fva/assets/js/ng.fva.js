@@ -2,171 +2,184 @@
 
 var fva = angular.module("ng.fva", ['ui.router', 'ui.mask']);
 
-fva.controller('termoCompromissoCtrl', ['$scope', '$state', 'fvaQuestions', function($scope, $state, fvaQuestions){
+fva.controller('termoCompromissoCtrl', ['$scope', '$state', 'fvaQuestions', function ($scope, $state, fvaQuestions) {
     $scope.condicao = fvaQuestions.termosCompromisso;
     $scope.displayAlertaTermoCompromisso = false;
 
-    $scope.validateTermos = function(){
-        if($scope.condicao.ciente){
+    $scope.validateTermos = function () {
+        if ($scope.condicao.ciente) {
             $state.go('intro');
         }
-        else{
+        else {
             $scope.displayAlertaTermoCompromisso = true;
         }
     }
 }]);
 
-fva.controller('introCtrl', ['$scope', '$state', 'fvaQuestions', 'questionValidator', function($scope, $state, fvaQuestions, questionValidator){
-    $scope.dadosIntro = fvaQuestions.introducao; 
+fva.controller('introCtrl', ['$scope', '$state', 'fvaQuestions', 'questionValidator', function ($scope, $state, fvaQuestions, questionValidator) {
+    $scope.dadosIntro = fvaQuestions.introducao;
 
     //Checa se não foi deixado resposta em branco e exibe a respectiva mensagem de alerta
-    $scope.validateIntro = function(){
+    $scope.validateIntro = function () {
         let isValid = false;
 
         //faz a validação de acordo com as informações que estão sendo exibidas na tela
-        if($scope.dadosIntro.jaParticipouFVA.answer){
+        if ($scope.dadosIntro.jaParticipouFVA.answer) {
             $scope.displayFirstTimeSurveyWarning = questionValidator.multiplaEscolha($scope.dadosIntro.questionarioJaParticipou.motivos, $scope.dadosIntro.questionarioJaParticipouOutros);
             isValid = !$scope.displayFirstTimeSurveyWarning;
         }
-        else{
+        else {
             $scope.displayNotFirstTimeSurveyWarning = questionValidator.multiplaEscolha($scope.dadosIntro.questionarioNaoParticipou.edicoes);
             isValid = !$scope.displayNotFirstTimeSurveyWarning;
         }
 
-        if(isValid){
+        if (isValid) {
             $state.go('responsavel');
         }
     }
 }]);
 
-fva.controller('responsavelCtrl', ['$scope', '$state', 'fvaQuestions', 'questionValidator', function($scope, $state, fvaQuestions, questionValidator){
+fva.controller('responsavelCtrl', ['$scope', '$state', 'fvaQuestions', 'questionValidator', function ($scope, $state, fvaQuestions, questionValidator) {
     $scope.dadosResponsavel = fvaQuestions.responsavel;
 
-    $scope.validateResponsavel = function(){
+    $scope.validateResponsavel = function () {
         $scope.displayNameWarning = $scope.dadosResponsavel.nome.answer === '' ? true : false;
         $scope.displayEmailWarning = questionValidator.validateEmail($scope.dadosResponsavel.email.answer);
         $scope.displayTelWarning = $scope.dadosResponsavel.telefone.answer === '' ? true : false;
 
-        if($scope.displayNameWarning === false && $scope.displayEmailWarning === false && $scope.displayTelWarning === false){
+        if ($scope.displayNameWarning === false && $scope.displayEmailWarning === false && $scope.displayTelWarning === false) {
             $state.go('visitacao');
         }
     }
 }]);
 //@todo refatorar validação
-fva.controller('visitacaoCtrl', ['$scope', '$state', 'fvaQuestions', 'questionValidator', function($scope, $state, fvaQuestions, questionValidator){
+fva.controller('visitacaoCtrl', ['$scope', '$state', 'fvaQuestions', 'questionValidator', function ($scope, $state, fvaQuestions, questionValidator) {
     $scope.dadosVisitacao = fvaQuestions.visitacao;
 
-    $scope.validateVisitacao = function(){
+    $scope.validateVisitacao = function () {
         let isValid = false;
 
-        if($scope.dadosVisitacao.realizaContagem.answer){
+        if ($scope.dadosVisitacao.realizaContagem.answer) {
             $scope.displayTecnicaContagemWarning = questionValidator.multiplaEscolha($scope.dadosVisitacao.tecnicaContagem, $scope.dadosVisitacao.tecnicaContagemOutros);
             $scope.displayTotalVisitasWarning = $scope.dadosVisitacao.quantitativo.answer === '' ? true : false;
 
-            if($scope.displayTecnicaContagemWarning === false && $scope.displayTotalVisitasWarning === false){
+            if ($scope.displayTecnicaContagemWarning === false && $scope.displayTotalVisitasWarning === false) {
                 isValid = true;
             }
         }
-        else{
+        else {
             //nenhuma validação é necessária
             isValid = true;
         }
-            
-        if(isValid){
+        
+        if (isValid) {
             $state.go('avaliacao');
         }
     }
 }]);
 
-fva.controller('avaliacaoCtrl', ['$scope', '$state', 'fvaQuestions', 'questionValidator', function($scope, $state, fvaQuestions, questionValidator){
+fva.controller('avaliacaoCtrl', ['$scope', '$state', 'fvaQuestions', 'questionValidator', 'saveFvaQuestions', function ($scope, $state, fvaQuestions, questionValidator, saveFvaQuestions) {
     $scope.dadosAvaliacao = fvaQuestions.avaliacao;
-
-    $scope.validateVisitacao = function(){
+    
+    $scope.validateVisitacao = function () {
         let isValid = false;
         $scope.displayMidiaWarning = questionValidator.multiplaEscolha($scope.dadosAvaliacao.midias, $scope.dadosAvaliacao.midiasOutros);
         isValid = !$scope.displayMidiaWarning;
-        
-        if(isValid){
-            $state.go('revisao');
+
+        if (isValid) {
+            $scope.saveQuestionario = saveFvaQuestions.save();
+
+            if($scope.saveQuestionario === true){
+                $state.go('revisao');
+            }
         }
     }
 }]);
 
-fva.controller('revisaoCtrl', ['$scope', 'fvaQuestions', function($scope, fvaQuestions){
+fva.controller('revisaoCtrl', ['$scope', 'fvaQuestions', function ($scope, fvaQuestions) {
     $scope.respostasFVA = fvaQuestions;
 }]);
 
-fva.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider){
+fva.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
     let pluginTemplatePath = '/protected/application/plugins/Fva/assets/partials';
     $urlRouterProvider.otherwise("/")
 
     $stateProvider
-    .state('/', {
-        url: "/",
-        templateUrl : pluginTemplatePath + '/index.html'
-    })
-    .state('termo-compromisso', {
-        controller: 'termoCompromissoCtrl',
-        templateUrl : pluginTemplatePath + '/termo-compromisso.html'
-    })
-    .state('intro', {
-        controller: 'introCtrl',
-        templateUrl : pluginTemplatePath + '/intro.html'
-    })
-    .state('responsavel', {
-        controller: 'responsavelCtrl',
-        templateUrl : pluginTemplatePath + '/responsavel.html'
-    })
-    .state('visitacao', {
-        controller: 'visitacaoCtrl',
-        templateUrl : pluginTemplatePath + '/visitacao.html'
-    })
-    .state('avaliacao', {
-        controller: 'avaliacaoCtrl',
-        templateUrl : pluginTemplatePath + '/avaliacao.html'
-    })
-    .state('revisao', {
-        controller: 'revisaoCtrl',
-        templateUrl : pluginTemplatePath + '/revisao.html'
-    })
+        .state('/', {
+            url: "/",
+            templateUrl: pluginTemplatePath + '/index.html'
+        })
+        .state('termo-compromisso', {
+            controller: 'termoCompromissoCtrl',
+            templateUrl: pluginTemplatePath + '/termo-compromisso.html'
+        })
+        .state('intro', {
+            controller: 'introCtrl',
+            templateUrl: pluginTemplatePath + '/intro.html'
+        })
+        .state('responsavel', {
+            controller: 'responsavelCtrl',
+            templateUrl: pluginTemplatePath + '/responsavel.html'
+        })
+        .state('visitacao', {
+            controller: 'visitacaoCtrl',
+            templateUrl: pluginTemplatePath + '/visitacao.html'
+        })
+        .state('avaliacao', {
+            controller: 'avaliacaoCtrl',
+            templateUrl: pluginTemplatePath + '/avaliacao.html'
+        })
+        .state('revisao', {
+            controller: 'revisaoCtrl',
+            templateUrl: pluginTemplatePath + '/revisao.html'
+        })
 }]);
 
-fva.service('questionValidator', function(){
+fva.service('questionValidator', function () {
     //valida se pelo menos uma opçao da multipla escolha foi selecionado
-    this.multiplaEscolha = function(questionario, outros){
+    this.multiplaEscolha = function (questionario, outros) {
         let hasErrors = true;
-        
-        Object.keys(questionario).forEach(function(k){
-            if(questionario[k].answer === true){
+
+        Object.keys(questionario).forEach(function (k) {
+            if (questionario[k].answer === true) {
                 hasErrors = false;
             }
         });
 
         //valida o campo 'Outros' que é opcional
-        if(outros !== undefined){
-            if(outros.answer && outros.text.length == 0){
+        if (outros !== undefined) {
+            if (outros.answer && outros.text.length == 0) {
                 hasErrors = true;
             }
-            else if(outros.answer && outros.text.length > 0){
+            else if (outros.answer && outros.text.length > 0) {
                 hasErrors = false;
             }
         }
-        
+
         return hasErrors;
     }
 
     //Se o campo outros estiver marcado mas não tiver texto, retorna true
-    this.validaOutros = function(outros){
+    this.validaOutros = function (outros) {
         return outros.answer && outros.text.length == 0 ? true : false;
     }
 
-    this.validateEmail = function(email){
+    this.validateEmail = function (email) {
         let filter = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
         return !filter.test(email);
     }
 });
 
-fva.factory('fvaQuestions', function(){
+fva.service('saveFvaQuestions', ['$http', 'fvaQuestions', function($http, fvaQuestions){
+    this.save = function(){
+        console.log(fvaQuestions);
+        let fvaQuestionsJson = JSON.stringify(fvaQuestions);
+        console.log(fvaQuestionsJson);
+        return true;
+    }
+}]);
+
+fva.factory('fvaQuestions', function () {
     return {
         termosCompromisso: {
             ciente: false
@@ -288,7 +301,7 @@ fva.factory('fvaQuestions', function(){
             }
         },
         avaliacao: {
-            midias:{
+            midias: {
                 correspondencia: {
                     label: "Correspondência enviada pelo IBRAM",
                     answer: false
@@ -349,7 +362,7 @@ fva.factory('fvaQuestions', function(){
             },
             opiniao: {
                 label: "Gostaríamos de saber sua opinião sobre o nosso questionário. Registre neste espaço as informações faltantes que você considera" +
-                       "pertinentes e deixe também comentários/sugestões/críticas para aprimorarmos o Formulário de Visitação Anual em suas próximas edições",
+                "pertinentes e deixe também comentários/sugestões/críticas para aprimorarmos o Formulário de Visitação Anual em suas próximas edições",
                 text: ''
             }
         }
