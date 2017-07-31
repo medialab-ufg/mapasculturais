@@ -2,10 +2,11 @@
 
 var fva = angular.module("ng.fva", ['ui.router', 'ui.mask']);
 
-fva.controller('termoCompromissoCtrl', ['$scope', '$state', 'fvaQuestions', function ($scope, $state, fvaQuestions) {
+fva.controller('termoCompromissoCtrl', ['$scope', '$state', 'fvaQuestions', 'saveFvaQuestions', function ($scope, $state, fvaQuestions, saveFvaQuestions) {
     $scope.condicao = fvaQuestions.termosCompromisso;
     $scope.displayAlertaTermoCompromisso = false;
 
+    saveFvaQuestions.save();
     $scope.validateTermos = function () {
         if ($scope.condicao.ciente) {
             $state.go('intro');
@@ -52,7 +53,7 @@ fva.controller('responsavelCtrl', ['$scope', '$state', 'fvaQuestions', 'question
         }
     }
 }]);
-//@todo refatorar validação
+
 fva.controller('visitacaoCtrl', ['$scope', '$state', 'fvaQuestions', 'questionValidator', function ($scope, $state, fvaQuestions, questionValidator) {
     $scope.dadosVisitacao = fvaQuestions.visitacao;
 
@@ -172,10 +173,7 @@ fva.service('questionValidator', function () {
 
 fva.service('saveFvaQuestions', ['$http', 'fvaQuestions', function($http, fvaQuestions){
     this.save = function(){
-        console.log(fvaQuestions);
-        let fvaQuestionsJson = JSON.stringify(fvaQuestions);
-        console.log(fvaQuestionsJson);
-        return true;
+        $http.post(MapasCulturais.createUrl('space', 'fvaSave', [MapasCulturais.entity.id]), fvaQuestions);
     }
 }]);
 

@@ -2,6 +2,7 @@
 namespace Fva;
 
 use MapasCulturais\app;
+use MapasCulturais\Entities;
 
 class Plugin extends \MapasCulturais\Plugin {
 
@@ -13,8 +14,7 @@ class Plugin extends \MapasCulturais\Plugin {
         });
 
         $app->hook('template(space.single.tabs-content):end', function() use($app){
-            $spaceEntity = $app->view->controller->requestedEntity;
-            $this->part('fva-form', ['entity' => $spaceEntity]);
+            $this->part('fva-form');
         });
         
         $app->hook('mapasculturais.head', function() use($app){
@@ -23,6 +23,21 @@ class Plugin extends \MapasCulturais\Plugin {
             $app->view->enqueueScript('app', 'ng.fva', 'js/ng.fva.js');
             $app->view->enqueueStyle('app', 'fva.css', 'css/fva.css');
             $app->view->jsObject['angularAppDependencies'][] = 'ng.fva';
+        });
+
+        $app->hook('POST(space.fvaSave)', function () use($app){
+            $spaceEntity = $app->view->controller->requestedEntity;
+            $fvaQuestions = json_encode($this->postData, true);
+            
+            $spaceMeta = new Entities\SpaceMeta;
+            $spaceMeta->key = 'fva' + \date('Y'); //Gera a chave do metadado de acordo com o ano corrente
+            $spaceMeta->value = $fvaQuestions;
+            $spaceMeta->owner = $spaceEntity;
+
+            $app->em->persist($spaceMeta);
+            
+            $spaceMeta->save(true);
+            
         });
     }
 
