@@ -2,11 +2,31 @@
 
 var fva = angular.module("ng.fva", ['ui.router', 'ui.mask']);
 
-fva.controller('termoCompromissoCtrl', ['$scope', '$state', 'fvaQuestions', 'saveFvaQuestions', function ($scope, $state, fvaQuestions, saveFvaQuestions) {
+//Controller definido em fva-form que faz o roteamento entre um novo questionário ou exibir um questionário já respondido
+fva.controller('rootController', ['$scope', '$rootScope', '$state', 'fvaQuestions', function($scope, $rootScope, $state, fvaQuestions){
+    //delete MapasCulturais.respondido;
+
+    if(MapasCulturais.hasOwnProperty('respondido')){
+        $scope.$root.respostas = angular.fromJson(MapasCulturais.respondido);
+        $scope.respostas = fvaQuestions;
+        
+        $state.go('revisao');
+    }
+    else{
+        $state.go('index');
+    }
+}]);
+
+fva.controller('indexCtrl', ['$scope', '$state', function($scope, $state){
+    $scope.beginFva = function(){
+        $state.go('termo-compromisso');
+    }
+}]);
+
+fva.controller('termoCompromissoCtrl', ['$scope', '$state', 'fvaQuestions', function ($scope, $state, fvaQuestions) {
     $scope.condicao = fvaQuestions.termosCompromisso;
     $scope.displayAlertaTermoCompromisso = false;
-
-    saveFvaQuestions.save();
+    
     $scope.validateTermos = function () {
         if ($scope.condicao.ciente) {
             $state.go('intro');
@@ -86,10 +106,10 @@ fva.controller('avaliacaoCtrl', ['$scope', '$state', 'fvaQuestions', 'questionVa
         let isValid = false;
         $scope.displayMidiaWarning = questionValidator.multiplaEscolha($scope.dadosAvaliacao.midias, $scope.dadosAvaliacao.midiasOutros);
         isValid = !$scope.displayMidiaWarning;
-
+        
         if (isValid) {
             $scope.saveQuestionario = saveFvaQuestions.save();
-
+            
             if($scope.saveQuestionario === true){
                 $state.go('revisao');
             }
@@ -97,8 +117,13 @@ fva.controller('avaliacaoCtrl', ['$scope', '$state', 'fvaQuestions', 'questionVa
     }
 }]);
 
-fva.controller('revisaoCtrl', ['$scope', 'fvaQuestions', function ($scope, fvaQuestions) {
-    $scope.respostasFVA = fvaQuestions;
+fva.controller('revisaoCtrl', ['$scope','$rootScope', 'fvaQuestions', function ($scope, $rootScope, fvaQuestions) {
+    if($scope.$root.respostas){
+        $scope.respostasFVA = $scope.$root.respostas;
+    }
+    else{
+        $scope.respostasFVA = fvaQuestions;
+    }
 }]);
 
 fva.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
@@ -106,8 +131,8 @@ fva.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
     $urlRouterProvider.otherwise("/")
 
     $stateProvider
-        .state('/', {
-            url: "/",
+        .state('index', {
+            controller: 'indexCtrl',
             templateUrl: pluginTemplatePath + '/index.html'
         })
         .state('termo-compromisso', {
@@ -171,9 +196,11 @@ fva.service('questionValidator', function () {
     }
 });
 
-fva.service('saveFvaQuestions', ['$http', 'fvaQuestions', function($http, fvaQuestions){
+fva.service('saveFvaQuestions', ['$http', '$state', 'fvaQuestions', function($http, $state, fvaQuestions){
     this.save = function(){
-        $http.post(MapasCulturais.createUrl('space', 'fvaSave', [MapasCulturais.entity.id]), fvaQuestions);
+        $http.post(MapasCulturais.createUrl('space', 'fvaSave', [MapasCulturais.entity.id]), JSON.stringify(fvaQuestions)).then(function successCallback(response){
+            $state.go('revisao');
+        });
     }
 }]);
 
