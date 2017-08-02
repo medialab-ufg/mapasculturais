@@ -23,13 +23,11 @@ class Plugin extends \MapasCulturais\Plugin {
             if($spaceEntity){
                 $questionarioRespondido = $this->checkCurrentFva($spaceEntity);
 
-            }
-            
-            if(!empty($questionarioRespondido)){
-                $app->view->jsObject['respondido'] = $questionarioRespondido;
+                if(!empty($questionarioRespondido)){
+                    $app->view->jsObject['respondido'] = $questionarioRespondido;
+                }
             }
 
-            //$app->view->jsObject['respondido'] = $spaceEntity->metadata['fva2017'];
             $app->view->enqueueScript('app', 'angular-ui-mask', 'js/mask.js');
             $app->view->enqueueScript('app', 'angular-ui-router', 'js/angular-ui-router.min.js');
             $app->view->enqueueScript('app', 'ng.fva', 'js/ng.fva.js');

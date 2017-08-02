@@ -101,7 +101,7 @@ fva.controller('visitacaoCtrl', ['$scope', '$state', 'fvaQuestions', 'questionVa
 fva.controller('avaliacaoCtrl', ['$scope', '$state', 'fvaQuestions', 'questionValidator', 'saveFvaQuestions', function ($scope, $state, fvaQuestions, questionValidator, saveFvaQuestions) {
     $scope.dadosAvaliacao = fvaQuestions.avaliacao;
     
-    $scope.validateVisitacao = function () {
+    $scope.validateAvaliacao = function () {
         let isValid = false;
         $scope.displayMidiaWarning = questionValidator.multiplaEscolha($scope.dadosAvaliacao.midias, $scope.dadosAvaliacao.midiasOutros);
         isValid = !$scope.displayMidiaWarning;
