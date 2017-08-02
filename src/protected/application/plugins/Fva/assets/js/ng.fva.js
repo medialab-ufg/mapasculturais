@@ -1,10 +1,9 @@
 "use strict";
 
 var fva = angular.module("ng.fva", ['ui.router', 'ui.mask']);
-//@TODO REMOVER O FVA ---------------------------------------------------------------------------------------------------------------------
+
 //Controller definido em fva-form que faz o roteamento entre um novo questionário ou exibir um questionário já respondido
-fva.controller('rootController', ['$scope', '$rootScope', '$state', 'fvaQuestions', 'saveFvaQuestions', function($scope, $rootScope, $state, fvaQuestions, saveFvaQuestions){
-    //delete MapasCulturais.respondido;
+fva.controller('rootController', ['$scope', '$rootScope', '$state', 'fvaQuestions', function($scope, $rootScope, $state, fvaQuestions){
     
     if(MapasCulturais.hasOwnProperty('respondido')){
         $scope.$root.respostas = angular.fromJson(MapasCulturais.respondido);
@@ -126,9 +125,8 @@ fva.controller('revisaoCtrl', ['$scope','$rootScope', 'fvaQuestions', function (
     }
 }]);
 
-fva.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
-    let pluginTemplatePath = '/protected/application/plugins/Fva/assets/partials';
-    $urlRouterProvider.otherwise("/")
+fva.config(['$stateProvider', function ($stateProvider) {
+    const pluginTemplatePath = '/protected/application/plugins/Fva/assets/partials';
 
     $stateProvider
         .state('index', {
