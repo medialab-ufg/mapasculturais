@@ -38,21 +38,22 @@ class Plugin extends \MapasCulturais\Plugin {
             $app->view->jsObject['angularAppDependencies'][] = 'ng.fva';
         });
 
+        /**
+         * Salva o JSON com as respostas
+         */
         $app->hook('POST(space.fvaSave)', function () use($app){
             $spaceEntity = $app->view->controller->requestedEntity;
-            $fvaQuestions = json_encode($this->postData);
-            \dump($POST);die;
-            $spaceMeta = new Entities\SpaceMeta;
-            $fvaCorrente = $this->getCurrentFva();
+            $fvaAnswersJson = file_get_contents('php://input');
             
-            $spaceMeta->key = 'fva2017'; //Gera a chave do metadado de acordo com o ano corrente
-            $spaceMeta->value = $fvaQuestions;
+            $spaceMeta = new Entities\SpaceMeta;
+            $fvaCorrente = $this->currentFva();
+            
+            $spaceMeta->key = 'fva2017';
+            $spaceMeta->value = $fvaAnswersJson;
             $spaceMeta->owner = $spaceEntity;
 
             $app->em->persist($spaceMeta);
-            
             $spaceMeta->save(true);
-            
         });
     }
 
@@ -65,7 +66,7 @@ class Plugin extends \MapasCulturais\Plugin {
      */
     private function checkCurrentFva($spaceEntity){
         $ano = \date('Y');
-        $fvaCorrente = $this->getCurrentFva();
+        $fvaCorrente = $this->currentFva();
         
         if(array_key_exists($fvaCorrente, $spaceEntity->metadata)){
             return $spaceEntity->metadata[$fvaCorrente];
@@ -80,7 +81,7 @@ class Plugin extends \MapasCulturais\Plugin {
      *
      * @return string
      */
-    private function getCurrentFva(){
+    private function currentFva(){
         $ano = \date('Y');
         $currentFva = "fva$ano";
         

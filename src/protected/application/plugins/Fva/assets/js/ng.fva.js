@@ -1,11 +1,11 @@
 "use strict";
 
 var fva = angular.module("ng.fva", ['ui.router', 'ui.mask']);
-
+//@TODO REMOVER O FVA ---------------------------------------------------------------------------------------------------------------------
 //Controller definido em fva-form que faz o roteamento entre um novo questionário ou exibir um questionário já respondido
-fva.controller('rootController', ['$scope', '$rootScope', '$state', 'fvaQuestions', function($scope, $rootScope, $state, fvaQuestions){
+fva.controller('rootController', ['$scope', '$rootScope', '$state', 'fvaQuestions', 'saveFvaQuestions', function($scope, $rootScope, $state, fvaQuestions, saveFvaQuestions){
     //delete MapasCulturais.respondido;
-
+    
     if(MapasCulturais.hasOwnProperty('respondido')){
         $scope.$root.respostas = angular.fromJson(MapasCulturais.respondido);
         $scope.respostas = fvaQuestions;
@@ -198,7 +198,7 @@ fva.service('questionValidator', function () {
 
 fva.service('saveFvaQuestions', ['$http', '$state', 'fvaQuestions', function($http, $state, fvaQuestions){
     this.save = function(){
-        $http.post(MapasCulturais.createUrl('space', 'fvaSave', [MapasCulturais.entity.id]), JSON.stringify(fvaQuestions)).then(function successCallback(response){
+        $http.post(MapasCulturais.createUrl('space', 'fvaSave', [MapasCulturais.entity.id]), angular.toJson(fvaQuestions)).then(function successCallback(response){
             $state.go('revisao');
         });
     }
