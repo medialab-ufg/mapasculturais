@@ -134,31 +134,52 @@ fva.config(['$stateProvider', function ($stateProvider) {
     $stateProvider
         .state('index', {
             controller: 'indexCtrl',
-            templateUrl: pluginTemplatePath + '/index.html'
+            templateUrl: pluginTemplatePath + '/index.html',
+            onEnter: function(){
+                $(document).scrollTop(window.innerHeight/2)
+            }
         })
         .state('termo-compromisso', {
             controller: 'termoCompromissoCtrl',
-            templateUrl: pluginTemplatePath + '/termo-compromisso.html'
+            templateUrl: pluginTemplatePath + '/termo-compromisso.html',
+            onEnter: function(){
+                $(document).scrollTop(window.innerHeight/2)
+            }
         })
         .state('intro', {
             controller: 'introCtrl',
-            templateUrl: pluginTemplatePath + '/intro.html'
+            templateUrl: pluginTemplatePath + '/intro.html',
+            onEnter: function(){
+                $(document).scrollTop(window.innerHeight/2)
+            }
         })
         .state('responsavel', {
             controller: 'responsavelCtrl',
-            templateUrl: pluginTemplatePath + '/responsavel.html'
+            templateUrl: pluginTemplatePath + '/responsavel.html',
+            onEnter: function(){
+                $(document).scrollTop(window.innerHeight/2)
+            }
         })
         .state('visitacao', {
             controller: 'visitacaoCtrl',
-            templateUrl: pluginTemplatePath + '/visitacao.html'
+            templateUrl: pluginTemplatePath + '/visitacao.html',
+            onEnter: function(){
+                $(document).scrollTop(window.innerHeight/2)
+            }
         })
         .state('avaliacao', {
             controller: 'avaliacaoCtrl',
-            templateUrl: pluginTemplatePath + '/avaliacao.html'
+            templateUrl: pluginTemplatePath + '/avaliacao.html',
+            onEnter: function(){
+                $(document).scrollTop(window.innerHeight/2)
+            }
         })
         .state('revisao', {
             controller: 'revisaoCtrl',
-            templateUrl: pluginTemplatePath + '/revisao.html'
+            templateUrl: pluginTemplatePath + '/revisao.html',
+            onEnter: function(){
+                $(document).scrollTop(window.innerHeight/2)
+            }
         })
 }]);
 

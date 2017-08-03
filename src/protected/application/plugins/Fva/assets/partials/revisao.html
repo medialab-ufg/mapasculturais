@@ -1,14 +1,18 @@
 <div id="fva-revisao">
     <div id="dados-revisao">
+        <div ng-if="showReviewAlert">
+            <p class="confirmacao" colspan="2">
+                Revise as informações abaixo com atenção e verifique se as informações procedem. Após o envio
+                não será possível mais editar. Aperte o botão "Enviar" para enviar as respostas
+                ou o botão "Voltar" para revisar as respostas informadas se necessário.
+            </p>
+        </div>
+        <div ng-if="showReviewAlert" class="nav-panel">
+            <input type="submit" ui-sref="avaliacao" value="<< Anterior">
+            <input id="enviarBtn" type="submit" value="Enviar >>" ng-click="enviarFVA()">
+        </div>
         <table id="respostas-fva">
             <tbody>
-                <tr ng-if="showReviewAlert">
-                    <td class="confirmacao" colspan="2">
-                        Revise as informações abaixo com atenção e verifique se as informações procedem. Após o envio
-                        não será possível mais editar. Aperte o botão "Enviar" ao final do formulário para enviar as respostas
-                        ou o botão "Voltar" para revisar as respostas informadas se necessário.
-                    </td>
-                </tr>
                 <tr class="item-title">
                     <td colspan="2">INTRODUÇÃO</td>
                 </tr>
@@ -104,9 +108,5 @@
                 </tr>
             </tbody>
         </table>
-        <div ng-if="showReviewAlert" class="nav-panel">
-            <input type="submit" ui-sref="avaliacao" value="<< Anterior">
-            <input type="submit" value="Enviar >>" ng-click="enviarFVA()">
-        </div>
     </div>
 </div>
