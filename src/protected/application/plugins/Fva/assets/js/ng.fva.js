@@ -107,21 +107,24 @@ fva.controller('avaliacaoCtrl', ['$scope', '$state', 'fvaQuestions', 'questionVa
         isValid = !$scope.displayMidiaWarning;
         
         if (isValid) {
-            $scope.saveQuestionario = saveFvaQuestions.save();
-            
-            if($scope.saveQuestionario === true){
-                $state.go('revisao');
-            }
+            $state.go('revisao');
         }
     }
 }]);
 
-fva.controller('revisaoCtrl', ['$scope','$rootScope', 'fvaQuestions', function ($scope, $rootScope, fvaQuestions) {
+fva.controller('revisaoCtrl', ['$scope','$rootScope', 'fvaQuestions', 'saveFvaQuestions', function ($scope, $rootScope, fvaQuestions, saveFvaQuestions) {
     if($scope.$root.respostas){
         $scope.respostasFVA = $scope.$root.respostas;
+        $scope.showReviewAlert = false;
     }
     else{
         $scope.respostasFVA = fvaQuestions;
+        $scope.showReviewAlert = true;
+    }
+
+    $scope.enviarFVA = function(){
+        saveFvaQuestions.save();
+        $scope.showReviewAlert = false;
     }
 }]);
 
@@ -194,10 +197,13 @@ fva.service('questionValidator', function () {
     }
 });
 
-fva.service('saveFvaQuestions', ['$http', '$state', 'fvaQuestions', function($http, $state, fvaQuestions){
+fva.service('saveFvaQuestions', ['$http', 'fvaQuestions', function($http, fvaQuestions){
     this.save = function(){
         $http.post(MapasCulturais.createUrl('space', 'fvaSave', [MapasCulturais.entity.id]), angular.toJson(fvaQuestions)).then(function successCallback(response){
-            $state.go('revisao');
+            MapasCulturais.Messages.success('Formulário enviado com sucesso!');
+        },
+        function errorCallback(){
+            MapasCulturais.Messages.error('Houve um erro no servidor. Tente enviar novamente dentro de alguns minutos.');
         });
     }
 }]);

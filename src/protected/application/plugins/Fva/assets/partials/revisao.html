@@ -2,23 +2,12 @@
     <div id="dados-revisao">
         <table id="respostas-fva">
             <tbody>
-                <tr class="item-title">
-                    <td colspan="2">TERMO DE COMPROMISSO</td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        Ao fornecer as informações solicitadas neste formulário, o responsável pelo preenchimento se compromete
-                        com a veracidade das informações prestadas, sendo de sua inteira responsabilidade fornecer quaisquer esclarecimentos
-                        que possam ser solicitados pelo Instituto Brasileiro de Museus(Ibram).
-                        Ainda, informamos que os dados fornecidos por meio do preenchimento do FVA serão ampla e irrestritamente divulgados
-                        de maneira agregada e, em casos especiais autorizados pelo Ibram, de maneira individualizada.
-                        Adicionalmente, esclarecemos que, em casos de mais de um preenchimento para a mesma instituição, será considerado
-                        o último preenchimento.
+                <tr ng-if="showReviewAlert">
+                    <td class="confirmacao" colspan="2">
+                        Revise as informações abaixo com atenção e verifique se as informações procedem. Após o envio
+                        não será possível mais editar. Aperte o botão "Enviar" ao final do formulário para enviar as respostas
+                        ou o botão "Voltar" para revisar as respostas informadas se necessário.
                     </td>
-                </tr>
-                <tr>
-                    <td class="pergunta-fva">Sim, estou ciente</td>
-                    <td class="resposta-fva">{{respostasFVA.termosCompromisso.ciente === true ? 'Sim' : 'Não'}}</td>
                 </tr>
                 <tr class="item-title">
                     <td colspan="2">INTRODUÇÃO</td>
@@ -115,5 +104,9 @@
                 </tr>
             </tbody>
         </table>
+        <div ng-if="showReviewAlert" class="nav-panel">
+            <input type="submit" ui-sref="avaliacao" value="<< Anterior">
+            <input type="submit" value="Enviar >>" ng-click="enviarFVA()">
+        </div>
     </div>
 </div>
