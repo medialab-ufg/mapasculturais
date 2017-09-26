@@ -57,7 +57,7 @@ class Module extends \MapasCulturais\Module{
         
         $app->hook('template(<<agent|space|project>>.single.tabs):end', function() use($app){
             $this->part('agenda-singles--tab');
-        });
+        }, 6);
         
         $app->hook('template(<<agent|space|project>>.single.tabs-content):end', function() use($app){
             $date_from = new \DateTime();

@@ -14,13 +14,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # Every Vagrant virtual environment requires a box to build off of.
     config.vm.box = "ubuntu/trusty64"
     config.vm.network "forwarded_port", guest: 8000, host: 3132
-
+    config.vm.network "forwarded_port", guest: 5432, host: 5432
 
     # backing providers for Vagrant. These expose provider-specific options.
     config.vm.provider :virtualbox do |vb|
 
         # Set VM memory size
-        vb.customize ["modifyvm", :id, "--memory", "512"]
+        vb.customize ["modifyvm", :id, "--memory", "1024"]
 
         # these 2 commands massively speed up DNS resolution, which means outbound
         # connections don't take forever (eg the WP admin dashboard and update page)
@@ -32,7 +32,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.landrush.enabled = true
     config.landrush.tld = 'fdev'
 
-    config.vm.network "private_network", ip: "192.168.50.5"
+    config.vm.network "private_network", ip: "192.168.10.10"
     config.vm.hostname = "mapa.fdev"
     config.hostsupdater.remove_on_suspend = true
 
