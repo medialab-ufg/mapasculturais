@@ -20,6 +20,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.provider :virtualbox do |vb|
 
         # Set VM memory size
+
         vb.customize ["modifyvm", :id, "--memory", "512"]
 
         # these 2 commands massively speed up DNS resolution, which means outbound

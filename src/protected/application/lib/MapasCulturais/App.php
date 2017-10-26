@@ -1034,6 +1034,10 @@ class App extends \Slim\Slim{
 
         $this->view->register();
 
+        foreach($this->_modules as $module){
+            $module->register();
+        }
+
         foreach($this->_plugins as $plugin){
             $plugin->register();
         }
@@ -1126,6 +1130,7 @@ class App extends \Slim\Slim{
      */
     public function handleUpload($key, $file_class_name){
         if(is_array($_FILES) && key_exists($key, $_FILES)){
+            
             if(is_array($_FILES[$key]['name'])){
                 $result = [];
                 foreach(array_keys($_FILES[$key]['name']) as $i){
@@ -1141,8 +1146,11 @@ class App extends \Slim\Slim{
                 if($_FILES[$key]['error']){
                     throw new \MapasCulturais\Exceptions\FileUploadError($key, $_FILES[$key]['error']);
                 }
-                $_FILES[$key]['name'] = $this->sanitizeFilename($_FILES[$key]['name']);
+                
+                $mime = mime_content_type($_FILES[$key]['tmp_name']);
+                $_FILES[$key]['name'] = $this->sanitizeFilename($_FILES[$key]['name'], $mime);
                 $result = new $file_class_name($_FILES[$key]);
+                
             }
             return $result;
         }else{
@@ -1159,11 +1167,29 @@ class App extends \Slim\Slim{
      *
      * @return string The sanitized filename.
      */
-    function sanitizeFilename($filename){
+    function sanitizeFilename($filename, $mimetype = false){
         $filename = str_replace(' ','_', strtolower($filename));
         if(is_callable($this->_config['app.sanitize_filename_function'])){
             $cb = $this->_config['app.sanitize_filename_function'];
             $filename = $cb($filename);
+        }
+        
+        // If the file does not have an extension and is a image, lets put it
+        // Wide Image relies on it and we know that cropped images come without extension (blob upload)
+        if (empty(pathinfo($filename, PATHINFO_EXTENSION)) && $mimetype) {
+            
+            $imagetypes = array(
+                'image/jpeg' => 'jpeg',
+                'image/bmp' => 'bmp',
+                'image/gif' => 'gif',
+                'image/tiff' => 'tif',
+                'image/png' => 'png',
+                'image/x-png' => 'png',
+            );
+            
+            if (array_key_exists($mimetype, $imagetypes))
+                $filename .= '.' . $imagetypes[$mimetype];
+                       
         }
 
         return $filename;

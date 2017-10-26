@@ -118,6 +118,9 @@ class Subsite extends \MapasCulturais\Entity
         } else {
             $val = [];
         }
+
+        $val = array_map(function($v) { return (int) $v; }, $val);
+
         $this->verifiedSeals = $val;
     }
 
@@ -299,6 +302,24 @@ class Subsite extends \MapasCulturais\Entity
         return isset($this->_entityApiQueryFilters[$entity_class]) ? $this->_entityApiQueryFilters[$entity_class] : null;
     }
 
+    function jsonSerialize() {
+        $result = [
+            'id' => $this->id,
+            'createTimestamp' => $this->createTimestamp,
+            'status' => $this->status,
+            'url' => $this->url,
+            'aliasUrl' => $this->aliasUrl,
+            'verifiedSeals' => $this->verifiedSeals,
+            'controllerId' => "subsite",
+            "deleteUrl" => $this->deleteUrl,
+            "editUrl" => $this->editUrl,
+            "singleUrl" => $this->singleUrl,
+
+        ];
+
+        return $result;
+    }
+
 
     public function applyConfigurations(&$config){
         $app = App::i();
@@ -347,19 +368,19 @@ class Subsite extends \MapasCulturais\Entity
 
         $entidades = explode(';', $this->entidades_habilitadas);
 
-        if(!in_array('Agentes', $entidades)){
+        if(!in_array('Agents', $entidades)){
             $config['app.enabled.agents'] = false;
         }
 
-        if (!in_array('Projetos', $entidades)) {
+        if (!in_array('Projects', $entidades)) {
             $config['app.enabled.projects'] = false;
         }
 
-        if (!in_array('Espaços', $entidades)) {
+        if (!in_array('Spaces', $entidades)) {
             $config['app.enabled.spaces'] = false;
         }
 
-        if (!in_array('Eventos', $entidades)) {
+        if (!in_array('Events', $entidades)) {
             $config['app.enabled.events'] = false;
         }
 
@@ -384,7 +405,7 @@ class Subsite extends \MapasCulturais\Entity
     }
 
     protected function canUserModify($user) {
-        return $user->is('superAdmin');
+        return $user->is('superAdmin', $this->id);
     }
 
     function clearCache(){

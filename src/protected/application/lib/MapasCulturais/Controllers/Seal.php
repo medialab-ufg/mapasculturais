@@ -20,6 +20,7 @@ class Seal extends EntityController {
     	Traits\ControllerTypes,
         Traits\ControllerMetaLists,
         Traits\ControllerAgentRelation,
+        Traits\ControllerChangeOwner,
         Traits\ControllerSoftDelete,
         Traits\ControllerDraft,
         Traits\ControllerArchive,
@@ -48,10 +49,9 @@ class Seal extends EntityController {
     	$app = App::i();
     	$id = $this->data['id'];
     	$relation = $app->repo('SealRelation')->find($id);
-      $expirationDate = $this->VerifySealValidity($relation);
-      $mensagemPrintSealRelation = $this->getSealRelationCertificateText($relation, $app, $expirationDate['date'], true);
-
-    	$this->render('sealrelation', ['relation'=>$relation, 'printSeal'=>$mensagemPrintSealRelation]);
+        $mensagemPrintSealRelation = $relation->getCertificateText(true);
+        
+    	$this->render('sealrelation', ['relation'=>$relation, 'printSeal'=>$mensagemPrintSealRelation, 'seal'=>$relation->seal]);
     }
 
     public function GET_printSealRelation(){

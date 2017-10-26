@@ -160,7 +160,7 @@ trait EntityMetadata{
             return false;
         }
 
-        if($user->is('admin') || $this->canUser('@control', $user)){
+        if($this->isUserAdmin($user) || $this->canUser('@control', $user)){
             return true;
         }
 
@@ -316,6 +316,22 @@ trait EntityMetadata{
         foreach(array_keys($this->__changedMetadata) as $meta_key){
             $metadata_object = $this->getMetadata($meta_key, true);
             $metadata_object->save();
+        }
+    }
+
+    /**
+     * Return Instagram URL if available
+     *
+     * @return string
+     */
+    public function getInstagramUrl(){
+        if($this->instagram){
+            $user = str_replace('@', '', $this->instagram);
+            $url = 'http://www.instagram.com/' . $user;
+
+            return $url;
+        }else{
+            return '#';
         }
     }
 }

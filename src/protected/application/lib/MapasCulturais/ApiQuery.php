@@ -82,6 +82,14 @@ class ApiQuery {
      * @var string
      */
     protected $permissionCacheClassName;
+
+    /**
+     * The Seal Relation Entity Class Name
+     *
+     * @example "MapasCulturais\Entities\AgentSealRelation"
+     * @var string
+     */
+    protected $sealRelationClassName;
     
     /**
      * The entity controller 
@@ -268,6 +276,10 @@ class ApiQuery {
      * @var type 
      */
     protected $_selectingFilesProperties = ['url'];
+
+    protected $_selectingIsVerfied = false;
+    
+    protected $_selectingVerfiedSeals = false;
     
     /**
      * Subqueries configuration
@@ -331,10 +343,13 @@ class ApiQuery {
     
     protected $_subsiteId = false;
 
+    protected $_selectAll = false;
     
-    public function __construct($entity_class_name, $api_params, $is_subsite_filter = false) {
+    public function __construct($entity_class_name, $api_params, $is_subsite_filter = false, $select_all = false) {
         $this->_subsiteId = $is_subsite_filter;
         
+        $this->_selectAll = $select_all;
+
         $this->initialize($entity_class_name, $api_params);
 
         $this->parseQueryParams();
@@ -381,6 +396,10 @@ class ApiQuery {
         
         if ($this->usesPermissionCache) {
             $this->permissionCacheClassName = $class::getPermissionCacheClassName();
+        }
+
+        if ($this->usesSealRelation) {
+            $this->sealRelationClassName = $class::getSealRelationEntityClassName();
         }
         
         if ($this->usesTaxonomies) {
@@ -800,6 +819,9 @@ class ApiQuery {
         $this->appendRelations($entities);
         $this->appendFiles($entities);
         $this->appendTerms($entities);
+        $this->appendIsVerified($entities);
+        $this->appendVerifiedSeals($entities);
+        $this->appendSeals($entities);
         
         // @TODO: metalist (copiar o files)
         // @TODO: relatedAgents
@@ -864,6 +886,7 @@ class ApiQuery {
         $app = App::i();
         $metadata = [];
         $definitions = $app->getRegisteredMetadata($this->entityClassName);
+
         if ($this->_selectingMetadata && count($entities) > 0) {
             
             $permissions = $this->getViewPrivateDataPermissions($entities);
@@ -1060,7 +1083,8 @@ class ApiQuery {
                         $select = "$_target_property,$select";                        
                     }
                     
-                    $query = new ApiQuery($target_class, ['@select' => $select]);
+                    $query = new ApiQuery($target_class, ['@select' => $select], false, $cfg['selectAll']);
+
                     $query->name = "{$this->name}->$prop";
 
                     $query->where = "e.{$_target_property} IN ({$_subquery_where_id_in})";
@@ -1304,6 +1328,112 @@ class ApiQuery {
             }
         }
     }
+
+    protected $_relatedSeals = null;
+
+    protected function _fetchRelatedSeals(array &$entities){
+        if(is_null($this->_relatedSeals)){
+            $app = App::i();
+
+            $dql_in = $this->getSubqueryInIdentities($entities);
+            $dql = "
+                SELECT
+                    IDENTITY(sr.owner) as entity_id,
+                    sr.id as relation_id,
+                    sr.createTimestamp as relation_create_timestamp,
+                    s.id as seal_id,
+                    s.name as seal_name
+                FROM
+                    {$this->sealRelationClassName} sr
+                    JOIN sr.seal s
+                WHERE
+                    sr.owner IN ($dql_in) AND
+                    sr.status >= 0 AND
+                    s.status >= 0";
+
+            $query = $this->em->createQuery($dql);
+            
+            if($this->_usingSubquery){
+                $query->setParameters($this->_dqlParams);
+            }
+
+            $relations = $query->getResult(Query::HYDRATE_ARRAY);
+
+            $this->_relatedSeals = [];
+            foreach($relations as $relation){
+                $relation = (object) $relation;
+                
+                $entity_id = $relation->entity_id;
+
+                if(!isset($this->_relatedSeals[$entity_id])){
+                    $this->_relatedSeals[$entity_id] = [];
+                }
+
+                $this->_relatedSeals[$entity_id][] = [
+                    'name' => $relation->seal_name,
+                    'singleUrl' => $app->createUrl('seal', 'sealRelation', [$relation->relation_id]),
+                    'createTimestamp' => $relation->relation_create_timestamp,
+                    'isVerificationSeal' => in_array($relation->seal_id, $app->config['app.verifiedSealsIds']),
+                ];
+            }
+        }
+    }
+
+    protected function appendIsVerified(array &$entities){
+        if($this->usesSealRelation && $this->_selectingIsVerfied){
+            $this->_fetchRelatedSeals($entities);
+
+            foreach($entities as &$entity){
+                $entity['isVerified'] = false;
+                if(isset($this->_relatedSeals[$entity['id']])){
+                    foreach($this->_relatedSeals as $relations){
+                        foreach($relations as $relation){
+                            if($relation['isVerificationSeal']){
+                                $entity['isVerified'] = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    protected function appendVerifiedSeals(array &$entities){
+        if($this->usesSealRelation && $this->_selectingVerfiedSeals){
+            $this->_fetchRelatedSeals($entities);
+
+            foreach($entities as &$entity){
+                if(isset($this->_relatedSeals[$entity['id']])){
+                    $entity['verifiedSeals'] = array_filter($this->_relatedSeals[$entity['id']], function($s){
+                        if($s['isVerificationSeal']){
+                            return $s;
+                        }
+                    });
+                } else {
+                    $entity['verifiedSeals'] = [];
+                }
+            }
+        }
+    }
+
+    protected function appendSeals(array &$entities){
+        if($this->usesSealRelation && $this->_selectingSeals){
+            $this->_fetchRelatedSeals($entities);
+
+            foreach($entities as &$entity){
+                if(isset($this->_relatedSeals[$entity['id']])){
+                    $entity['seals'] = $this->_relatedSeals[$entity['id']];
+                } else {
+                    $entity['seals'] = [];
+                }
+            }
+        }
+    }
+
+    protected function _appendSeals(array &$entities, $prop_name, array $seals){
+
+    }
+
     
     private $__viewPrivateDataPermissions = null;
     
@@ -1785,6 +1915,26 @@ class ApiQuery {
         }
 
         $this->_selecting = array_unique(explode(',', $select));
+
+
+        if($this->_selectAll){
+            foreach($this->_getAllPropertiesNames() as $k){
+                if(!in_array($k, $this->_selecting)){
+                    $sub = false;
+                    if($this->_subqueriesSelect){
+                        foreach($this->_subqueriesSelect as $sq){
+                            if($sq['property'] == $k){
+                                $sub = true;
+                            }
+                        }
+                    }
+                    if(!$sub){
+                        $this->_selecting[] = $k;
+                    }
+                }
+            }
+        }
+
         $entity_class = $this->entityClassName;
         foreach ($this->_selecting as $i => $prop) {
             if(!$prop){
@@ -1804,7 +1954,13 @@ class ApiQuery {
                 $this->_selectingUrls[] = $url_match[1];
             } elseif($prop === 'type' && $this->usesTypes){
                 $this->_selectingProperties[] = '_type';
-                $this->_selectingType = true;                
+                $this->_selectingType = true;
+            } elseif($prop === 'isVerified') {
+                $this->_selectingIsVerfied = true;
+            } elseif($prop === 'verifiedSeals') {
+                $this->_selectingVerfiedSeals = true;
+            } elseif($prop === 'seals') {
+                $this->_selectingSeals = true;
             }
         }
         
@@ -1813,6 +1969,15 @@ class ApiQuery {
     protected function _preCreateSelectSubquery($prop, $_select, $_match) {
                 
         $_select_properties = explode(',', $_select);
+
+        $_select_all = false;
+
+        if(in_array('*', $_select_properties)){
+            $_select_all = true;
+            if(($k = array_search('*', $_select_properties)) !== false) {
+                unset($_select_properties[$k]);
+            }
+        }
         
         $select = array_map(function($property) use(&$_match) {
             // if the property is a subsquery 
@@ -1824,7 +1989,7 @@ class ApiQuery {
             } else {
                 return $property;
             }
-        }, explode(',', $_select));
+        }, $_select_properties);
 
         $first_time = !isset($this->_selectingRelations[$prop]);
         
@@ -1843,6 +2008,7 @@ class ApiQuery {
             $this->_selectingRelations[$prop] = $uid;
             
             $this->_subqueriesSelect[$uid] = [
+                'selectAll' => $_select_all,
                 'property' => $prop,
                 'select' => array_unique($select),
                 'match' => $_match,

@@ -57,6 +57,13 @@ return array(
             )
         ),
 
+        'instagram' => array(
+            'label' => \MapasCulturais\i::__('Instagram'),
+            'validations' => array(
+                "v::startsWith('@')" => \MapasCulturais\i::__("O usuário informado é inválido. Informe no formato @usuario e tente novamente")
+            )
+        ),
+
         'registrationSeals' => array(
                 'label' => \MapasCulturais\i::__('Selos'),
                 'serialize' => function($value) { return json_encode($value); },
@@ -99,7 +106,9 @@ return array(
         32 => array( 'name' => \MapasCulturais\i::__("Parada e Desfile Festivo")),
         33 => array( 'name' => \MapasCulturais\i::__("Parada e Desfile Político")),
         34 => array( 'name' => \MapasCulturais\i::__("Parada e Desfile de Ações Afirmativas")),
-        35 => ['name' => \MapasCulturais\i::__("Inscrições")]
+        35 => ['name' => \MapasCulturais\i::__("Inscrições")],
+        121 => ['name' => \MapasCulturais\i::__("Pesquisa")],
+        122 => ['name' => \MapasCulturais\i::__("Consulta")]
     )
     /* EXEMPLOS DE METADADOS:
 

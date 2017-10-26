@@ -1211,6 +1211,10 @@ class Theme extends MapasCulturais\Theme {
         // It Javis ColorPicker
         $this->enqueueScript('vendor', 'bootstrap-colorpicker', '/vendor/bootstrap-colorpicker/js/bootstrap-colorpicker.js');
         $this->enqueueStyle('vendor', 'bootstrap-colorpicker', '/vendor/bootstrap-colorpicker/css/bootstrap-colorpicker.css');
+        
+        // Cropbox
+        $this->enqueueScript('vendor', 'cropbox', '/vendor/cropbox/jquery.cropbox.js', array('jquery'));
+        $this->enqueueStyle ('vendor', 'cropbox', '/vendor/cropbox/jquery.cropbox.css');
     }
 
     function includeCommonAssets() {
@@ -1298,6 +1302,9 @@ class Theme extends MapasCulturais\Theme {
             'insertLinkTitle'    => i::__('Insira um título para seu link.'),
             'insertLinkUrl'    => i::__('A url do link é inválida, insira uma url completa como http://www.google.com/.'),
             'Limpar'    => i::__('Limpar'),
+            'Crop'    => i::__('Recortar'),
+            'CropHelp'    => i::__('Arraste para recortar'),
+            'removeAgentBackground' => i::__('Tem certeza que deseja remover a imagem de capa?'),
         ]);
     }
 
@@ -1354,19 +1361,19 @@ class Theme extends MapasCulturais\Theme {
         $this->jsObject['assets']['pinShadow'] = $this->asset('img/pin-sombra.png', false);
         $this->jsObject['assets']['pinMarker'] = $this->asset('img/marker-icon.png', false);
 
-        $this->jsObject['assets']['pinAgent'] = $this->asset('img/pin-agente.png', false);
-        $this->jsObject['assets']['pinSpace'] = $this->asset('img/pin-espaco.png', false);
-        $this->jsObject['assets']['pinEvent'] = $this->asset('img/pin-evento.png', false);
+        $this->jsObject['assets']['pinAgent'] = $this->asset('img/pin-agent.png', false);
+        $this->jsObject['assets']['pinSpace'] = $this->asset('img/pin-space.png', false);
+        $this->jsObject['assets']['pinEvent'] = $this->asset('img/pin-event.png', false);
 
-        $this->jsObject['assets']['pinAgentGroup'] = $this->asset('img/agrupador-agente.png', false);
-        $this->jsObject['assets']['pinEventGroup'] = $this->asset('img/agrupador-evento.png', false);
-        $this->jsObject['assets']['pinSpaceGroup'] = $this->asset('img/agrupador-espaco.png', false);
-        //$this->jsObject['assets']['pinSealGroup'] = $this->asset('img/agrupador-selo.png', false);
+        $this->jsObject['assets']['pinAgentGroup'] = $this->asset('img/agrupador-agent.png', false);
+        $this->jsObject['assets']['pinEventGroup'] = $this->asset('img/agrupador-event.png', false);
+        $this->jsObject['assets']['pinSpaceGroup'] = $this->asset('img/agrupador-space.png', false);
+        //$this->jsObject['assets']['pinSealGroup'] = $this->asset('img/agrupador-seal.png', false);
 
-        $this->jsObject['assets']['pinAgentEventGroup'] = $this->asset('img/agrupador-combinado-agente-evento.png', false);
-        $this->jsObject['assets']['pinSpaceEventGroup'] = $this->asset('img/agrupador-combinado-espaco-evento.png', false);
-        $this->jsObject['assets']['pinAgentSpaceGroup'] = $this->asset('img/agrupador-combinado-espaco-agente.png', false);
-        //$this->jsObject['assets']['pinSealSpaceGroup'] = $this->asset('img/agrupador-combinado-espaco-selo.png', false);
+        $this->jsObject['assets']['pinAgentEventGroup'] = $this->asset('img/agrupador-combinado-agent-event.png', false);
+        $this->jsObject['assets']['pinSpaceEventGroup'] = $this->asset('img/agrupador-combinado-space-event.png', false);
+        $this->jsObject['assets']['pinAgentSpaceGroup'] = $this->asset('img/agrupador-combinado-space-agent.png', false);
+        //$this->jsObject['assets']['pinSealSpaceGroup'] = $this->asset('img/agrupador-combinado-space-seal.png', false);
 
         $this->jsObject['assets']['pinAgentSpaceEventGroup'] = $this->asset('img/agrupador-combinado.png', false);
 
@@ -1495,7 +1502,7 @@ class Theme extends MapasCulturais\Theme {
             echo "\n</script>\n";
     }
 
-    function ajaxUploader($file_owner, $group_name, $response_action, $response_target, $response_template = '', $response_transform = '', $add_description_input = false, $file_types = '.jpg ou .png') {
+    function ajaxUploader($file_owner, $group_name, $response_action, $response_target, $response_template = '', $response_transform = '', $add_description_input = false, $humanCrop = false, $file_types = '.jpg ou .png') {
         $this->part('ajax-uploader', array(
             'file_owner' => $file_owner,
             'file_group' => $group_name,
@@ -1504,7 +1511,8 @@ class Theme extends MapasCulturais\Theme {
             'response_template' => $response_template,
             'response_transform' => $response_transform,
             'add_description' => $add_description_input,
-            'file_types' => $file_types
+            'file_types' => $file_types,
+            'human_crop' => $humanCrop
         ));
     }
 
@@ -1563,7 +1571,8 @@ class Theme extends MapasCulturais\Theme {
                     $mod_field = array_merge($skeleton_field, $field);
 
                     if (in_array($mod_field['fieldType'], ['checklist', 'singleselect'])){
-                        $mod_field['options'] = [];
+                        if(!isset($mod_field['options']))
+                          $mod_field['options'] = [];
                         if ($mod_field['fieldType'] == 'singleselect')
                             $mod_field['options'][] = ['value' => null, 'label' => $mod_field['placeholder']];
                         switch ($mod_field['type']) {
@@ -1882,7 +1891,7 @@ class Theme extends MapasCulturais\Theme {
     	if (!$app->user->is('guest')) {
     		$this->jsObject['allowedSeals'] = $app->controller('seal')->apiQuery($query);
 
-        	if($app->user->is('admin') || $app->user->is('superAdmin') || $app->user->is('saasSuperAdmin') || $this->jsObject['allowedSeals'] > 0) {
+        	if($app->user->is('admin') || $this->jsObject['allowedSeals'] > 0) {
         		$this->jsObject['canRelateSeal'] = true;
         	} else {
         		$this->jsObject['canRelateSeal'] = false;

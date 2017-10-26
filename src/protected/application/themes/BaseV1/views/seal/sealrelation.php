@@ -8,9 +8,14 @@
 	    $this->addEntityTypesToJs($relation);
 	}
 
+<<<<<<< HEAD
 	$this->includeMapAssets();
 	$this->includeAngularEntityAssets($relation);
 	$seal = $relation->seal;
+=======
+    $this->includeMapAssets();
+    $this->includeAngularEntityAssets($relation);
+>>>>>>> upstream/master
 ?>
 
 <article class="main-content seal">
@@ -41,15 +46,17 @@
                 <?php $this->applyTemplateHook('agent-name','before'); ?>
                 <h5>
                     <span class="js-editable" data-edit="name" data-original-title="<?php \MapasCulturais\i::esc_attr_e("Nome de exibição");?>" data-emptytext="<?php \MapasCulturais\i::esc_attr_e("Nome de exibição");?>">
-                        <a href="<?php echo $app->createUrl('seal', 'single', ['id' => $relation->owner->id])?>"><?php echo $relation->owner->name; ?></a>
+                        <a href="<?php echo $relation->owner->getSingleUrl(); ?>"><?php echo $relation->owner->name; ?></a>
                     </span>
                 </h5>
                 <?php $this->applyTemplateHook('agent-name','after'); ?>
             </div>
              <!--print seal relation -->
+             <?php $this->applyTemplateHook('print-certificate','before'); ?>
             <div id="seal-print-container">
                 <?php echo $printSeal ?>
             </div>
+            <?php $this->applyTemplateHook('print-certificate','after',[$relation]); ?>
         </div><!-- fim seal info container -->
         <!-- Data de expiração -->
             <?php if($seal->validPeriod > 0):?>

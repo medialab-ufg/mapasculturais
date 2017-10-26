@@ -116,8 +116,6 @@ class Notification extends \MapasCulturais\Entity{
     }
 
 
-
-
     //============================================================= //
     // The following lines ara used by MapasCulturais hook system.
     // Please do not change them.
