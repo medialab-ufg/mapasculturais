@@ -8,14 +8,9 @@
 	    $this->addEntityTypesToJs($relation);
 	}
 
-<<<<<<< HEAD
-	$this->includeMapAssets();
-	$this->includeAngularEntityAssets($relation);
-	$seal = $relation->seal;
-=======
+
     $this->includeMapAssets();
     $this->includeAngularEntityAssets($relation);
->>>>>>> upstream/master
 ?>
 
 <article class="main-content seal">
