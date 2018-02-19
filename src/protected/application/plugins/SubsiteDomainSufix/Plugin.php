@@ -14,9 +14,9 @@ class Plugin extends \MapasCulturais\Plugin{
     }
     public function _init() {
         $app = App::i();
-        
+
         $sufix = $this->getSufix();
-        
+
         if($sufix[0] !== '.'){
             $sufix = '.' . $sufix;
         }
@@ -25,7 +25,7 @@ class Plugin extends \MapasCulturais\Plugin{
                 $this->url = $this->url . $sufix;
             }
         });
-        
+
         $app->hook('view.partial(singles/subsite-header--domains).params', function(&$params) use($sufix){
             $entity = $params['entity'];
             $params['entity_url'] = substr($entity->url,0,strlen($entity->url) - strlen($sufix));
@@ -33,7 +33,7 @@ class Plugin extends \MapasCulturais\Plugin{
         });
 
     }
-    
+
     public function register() { }
-    
+
 }
