@@ -212,24 +212,24 @@ abstract class Entity implements \JsonSerializable{
 
         return $user;
     }
-    
+
     function setStatus($status){
         if($status != $this->status){
             $class = $this->getClassName();
-            
+
             switch($status){
                 case $class::STATUS_ARCHIVED:
                     if($this->usesArchive()){
                         $this->checkPermission('archive');
                     }
                     break;
-                
+
                 case $class::STATUS_TRASH:
                     if($this->usesSoftDelete()){
                         $this->checkPermission('remove');
                     }
                     break;
-                    
+
             }
         }
         $this->status = $status;
@@ -253,7 +253,7 @@ abstract class Entity implements \JsonSerializable{
         if($this->isUserAdmin($user)){
             return true;
         }
-        
+
 
         if($this->getOwnerUser()->id == $user->id)
             return true;
@@ -834,7 +834,7 @@ abstract class Entity implements \JsonSerializable{
                     if(!is_string($this->$property)){
                         continue;
                     }
-                    
+
                     $validation = $htmltags_validation;
                 }
 

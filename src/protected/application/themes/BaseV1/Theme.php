@@ -21,7 +21,7 @@ class Theme extends MapasCulturais\Theme {
         'magnific-popup' => '0.9.9',
         'x-editable' => 'jquery-editable-dev-1.5.2'
     );
-    
+
     // The default fields that are queried to display the search results both on map and list modes
     public $searchQueryFields = array('id','singleUrl','name','subTitle','type','shortDescription','terms','project.name','project.singleUrl');
 
@@ -738,12 +738,12 @@ class Theme extends MapasCulturais\Theme {
 
     protected function _init() {
         $app = App::i();
-        
+
         if(!$app->user->is('guest') && $app->user->profile->status < 1){
             $app->hook('view.partial(nav-main-user).params', function($params, &$name){
                 $name = 'header-profile-link';
             });
-            
+
             $app->hook('GET(panel.<<*>>):before, GET(<<*>>.create):before', function() use($app){
                 $app->redirect($app->user->profile->editUrl);
             });
@@ -769,7 +769,7 @@ class Theme extends MapasCulturais\Theme {
         $this->jsObject['notificationsInterval'] = $app->config['notifications.interval'];
 
         $this->jsObject['searchQueryFields'] = implode(',', $this->searchQueryFields);
-        
+
         $this->jsObject['EntitiesDescription'] = [
         		"agent" => \MapasCulturais\Entities\Agent::getPropertiesMetadata(),
         		"event" => \MapasCulturais\Entities\Event::getPropertiesMetadata(),
@@ -1221,13 +1221,13 @@ class Theme extends MapasCulturais\Theme {
         // It Javis ColorPicker
         $this->enqueueScript('vendor', 'bootstrap-colorpicker', '/vendor/bootstrap-colorpicker/js/bootstrap-colorpicker.js');
         $this->enqueueStyle('vendor', 'bootstrap-colorpicker', '/vendor/bootstrap-colorpicker/css/bootstrap-colorpicker.css');
-        
+
         // Cropbox
         $this->enqueueScript('vendor', 'cropbox', '/vendor/cropbox/jquery.cropbox.js', array('jquery'));
         $this->enqueueStyle ('vendor', 'cropbox', '/vendor/cropbox/jquery.cropbox.css');
     }
 
-    function includeCommonAssets() { 
+    function includeCommonAssets() {
         $this->getAssetManager()->publishFolder('fonts/');
 
         $this->enqueueStyle('app', 'main', 'css/main.css');
@@ -1595,7 +1595,7 @@ class Theme extends MapasCulturais\Theme {
                             case 'entitytype':
 
                                 $types = App::i()->getRegisteredEntityTypes("MapasCulturais\Entities\\".ucfirst($key));
-                                
+
                                 // ordena alfabeticamente
                                 uasort($types, function($a, $b) {
                                     if ($a->name == $b->name)
@@ -2173,16 +2173,16 @@ class Theme extends MapasCulturais\Theme {
     function addSearchQueryFields($fields) {
         if (!$fields || empty($fields))
             return false;
-        
+
         if (is_string($fields))
             $fields = explode(',', $fields);
-        
+
         $this->searchQueryFields = array_merge($this->searchQueryFields, $fields);
         $this->jsObject['searchQueryFields'] = implode(',', $this->searchQueryFields);
-        
+
     }
-    
-    
-    
+
+
+
 
 }

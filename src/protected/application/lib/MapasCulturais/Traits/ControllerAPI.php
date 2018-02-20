@@ -172,7 +172,7 @@ trait ControllerAPI{
             unset($api_params['@version']);
             return $this->apiQueryV1($api_params, $options);
         }
-        
+
         $app = App::i();
         $findOne =  key_exists('findOne', $options) ? $options['findOne'] : false;
         $counting = key_exists('@count', $api_params);
@@ -183,7 +183,7 @@ trait ControllerAPI{
         $app->applyHookBoundTo($this, "API.{$this->action}({$this->id}).params", [&$api_params]);
 
         $query = new ApiQuery($this->entityClassName, $api_params);
-        
+
         if($counting){
             $result = $query->getCountResult();
         } elseif( $findOne ) {
@@ -197,14 +197,14 @@ trait ControllerAPI{
             }
             $this->apiAddHeaderMetadata($api_params, $result, $count);
         }
-        
+
         return $result;
     }
 
     public function apiQueryV1($qdata, $options = []){
         $this->_apiFindParamList = [];
         $app = App::i();
-        
+
         $__original_query_data = $qdata;
 
         $findOne =  key_exists('findOne', $options) ? $options['findOne'] : false;
@@ -228,7 +228,7 @@ trait ControllerAPI{
 
             $entity_metadata = [];
             $metadata_class = "";
-            
+
             $profiles = false;
 
             $meta_num = 0;
@@ -553,7 +553,7 @@ trait ControllerAPI{
             $app->applyHookBoundTo($this, "API.{$this->action}({$this->id}).query", [&$qdata, &$select_properties, &$dql_joins, &$dql_where]);
 
             $dql_where = "WHERE $dql_where";
-            
+
             if($profiles){
                 $dql_joins .= " JOIN e.user __profile_user JOIN __profile_user.profile __profile WITH __profile.id = e.id";
             }
@@ -682,7 +682,7 @@ trait ControllerAPI{
                 }
                 return $entity;
             };
-            
+
             if($findOne){
                 $hook_action = 'findOne';
             } else {
@@ -801,7 +801,7 @@ trait ControllerAPI{
                 $result = array_map(function($entity) use ($processEntity){
                     return $processEntity($entity);
                 }, $rs);
-                
+
                 $app->applyHookBoundTo($this, "API.{$hook_action}({$this->id}).result", [$__original_query_data, &$result, $hook_action]);
 
                 return $result;
